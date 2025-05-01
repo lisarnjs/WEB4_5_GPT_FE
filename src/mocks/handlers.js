@@ -1,9 +1,9 @@
 // src/mocks/handlers.js
-import { http } from "msw";
+import { rest } from "msw";
 
 export const handlers = [
   // 로그인
-  http.post(
+  rest.post(
     "https://api.unihub.com/api/members/login",
     async (req, res, ctx) => {
       const { email, password } = await req.json();
@@ -30,7 +30,7 @@ export const handlers = [
   ),
 
   // 마이페이지 (학생용)
-  http.get(
+  rest.get(
     "https://api.unihub.com/api/members/12/students/me",
     (req, res, ctx) => {
       return res(

@@ -7,7 +7,7 @@ import EmailInput from "../components/common/EmailInput";
 import PasswordInput from "../components/common/PasswordInput";
 import BaseButton from "../components/common/BaseButton";
 
-export default function Login() {
+export default function AdminLogin() {
   const navigate = useNavigate();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
@@ -54,18 +54,6 @@ export default function Login() {
           <a href="#" className="underline">
             비밀번호 찾기
           </a>
-          <div>
-            <a href="/adminLogin" className="underline">
-              관리자 로그인
-            </a>
-          </div>
-
-          <div>
-            계정이 없으신가요?{" "}
-            <a href="/signup" className="text-primary underline">
-              회원가입
-            </a>
-          </div>
         </div>
       </form>
     </div>

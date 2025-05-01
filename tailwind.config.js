@@ -5,15 +5,22 @@ export default {
     extend: {
       colors: {
         primary: "#21BF48",
-        mainText: "#000000",
-        subText: "#767676",
-        accentText: "#EB5757",
-        background: "#f2f2f2",
+        primaryHover: "#1da543",
+        primaryActive: "#1b8f3b",
+        primaryDisabled: "#A7D7B7",
+
+        secondary: "#2F80ED",
+        secondaryHover: "#1F66D0",
+        secondaryActive: "#174CA6",
+        secondaryDisabled: "#B9D3F4",
+
+        textMain: "#111827",
+        textSub: "#6B7280",
+        background: "#F9FAFB",
       },
       fontFamily: {
-        spoqa: ["SpoqaHanSansNeo-Regular"],
-        spoqaMedium: ["SpoqaHanSansNeo-Medium"],
-        spoqaBold: ["SpoqaHanSansNeo-Bold"],
+        noto: ['"Noto Sans KR"', "sans-serif"],
+        suit: ['"SUIT"', "sans-serif"],
       },
     },
     screens: {
