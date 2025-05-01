@@ -99,7 +99,10 @@ export default function LectureList() {
 
       <LectureModal
         isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setEditData(null);
+        }}
         onSubmit={(data) => {
           if (modalMode === "edit") {
             setLectures((prev) =>

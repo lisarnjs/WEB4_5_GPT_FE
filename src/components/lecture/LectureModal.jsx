@@ -5,6 +5,19 @@ const weekdays = ["월", "화", "수", "목", "금"];
 const grades = [1, 2, 3, 4];
 const semesters = [1, 2];
 
+const formInitData = {
+  title: "",
+  professor: "",
+  room: "",
+  day: "월",
+  time: "",
+  plan: false,
+  credits: 3,
+  capacity: 30,
+  grade: 1,
+  semester: 1,
+};
+
 export default function LectureModal({
   isOpen,
   onClose,
@@ -12,18 +25,7 @@ export default function LectureModal({
   mode = "create",
   initialData = {},
 }) {
-  const [form, setForm] = useState({
-    title: "",
-    professor: "",
-    room: "",
-    day: "월",
-    time: "",
-    plan: false,
-    credits: 3,
-    capacity: 30,
-    grade: 1,
-    semester: 1,
-  });
+  const [form, setForm] = useState(formInitData);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -42,6 +44,7 @@ export default function LectureModal({
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(form);
+    setForm(formInitData);
     onClose();
   };
 
@@ -184,7 +187,10 @@ export default function LectureModal({
           <div className="flex justify-end gap-2 pt-4">
             <BaseButton
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                setForm(formInitData);
+                onClose();
+              }}
               className="bg-gray-300 text-black"
             >
               취소

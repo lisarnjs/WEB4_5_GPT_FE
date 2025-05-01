@@ -153,7 +153,7 @@ export default function ResetPassword() {
         </BaseButton>
 
         <div className="text-sm text-center text-textSub">
-          <a href="/login" className="text-primary underline">
+          <a href="/" className="text-primary underline">
             로그인 페이지로 돌아가기
           </a>
         </div>
