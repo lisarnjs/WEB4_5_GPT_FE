@@ -9,7 +9,7 @@ import BaseButton from "../components/common/BaseButton";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { setAccessToken } = useAuthStore((state) => state.actions);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

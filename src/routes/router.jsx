@@ -3,6 +3,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import AdminLogin from "../pages/AdminLogin";
 import ResetPassword from "../pages/ResetPassword";
+import LectureList from "../pages/LectureList";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPassword />,
+  },
+  {
+    path: "/lecture",
+    element: <LectureList />,
   },
 ]);
 export default router;

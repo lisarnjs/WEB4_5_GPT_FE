@@ -9,7 +9,7 @@ import BaseButton from "../components/common/BaseButton";
 
 export default function Login() {
   const navigate = useNavigate();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { setAccessToken } = useAuthStore((state) => state.actions);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +22,7 @@ export default function Login() {
     try {
       const { accessToken } = await login(email, password);
       setAccessToken(accessToken);
+      // setUser({ id, name, role });
       navigate("/dashboard");
     } catch (err) {
       const message = err.response?.data?.message || "로그인에 실패했습니다.";
