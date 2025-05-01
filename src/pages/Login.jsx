@@ -51,7 +51,7 @@ export default function Login() {
         </BaseButton>
 
         <div className="text-sm text-center text-textSub space-y-1">
-          <a href="#" className="underline">
+          <a href="/reset-password" className="underline">
             비밀번호 찾기
           </a>
           <div>
