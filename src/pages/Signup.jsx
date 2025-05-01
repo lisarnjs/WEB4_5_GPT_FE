@@ -1,8 +1,8 @@
 // src/pages/Signup.jsx
 import { useState } from "react";
 import Select from "react-select";
-import StudentSignup from "../components/Signup/StudentSignup";
-import ProfessorSignup from "../components/Signup/ProfessorSignup";
+import StudentSignup from "../components/auth/StudentSignup";
+import ProfessorSignup from "../components/auth/ProfessorSignup";
 
 const signupTypeOptions = [
   { value: "s", label: "학생" },
