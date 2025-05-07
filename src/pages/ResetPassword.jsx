@@ -4,6 +4,7 @@ import EmailInput from "../components/common/EmailInput";
 import PasswordInput from "../components/common/PasswordInput";
 import BaseButton from "../components/common/BaseButton";
 import { requestEmailCode, verifyEmailCode, resetPassword } from "../apis/auth";
+import { LOGIN_PATH } from "../constants/route.constants";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -153,7 +154,7 @@ export default function ResetPassword() {
         </BaseButton>
 
         <div className="text-sm text-center text-textSub">
-          <a href="/" className="text-primary underline">
+          <a href={LOGIN_PATH} className="text-primary underline">
             로그인 페이지로 돌아가기
           </a>
         </div>

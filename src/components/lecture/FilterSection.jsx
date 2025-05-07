@@ -2,7 +2,7 @@ import BaseButton from "../common/BaseButton";
 
 const majors = [
   { value: "", label: "전체" },
-  { value: "cs", label: "컴퓨터공학과" },
+  { value: "cs", label: "컴퓨터학과" },
   { value: "ba", label: "경영학과" },
 ];
 

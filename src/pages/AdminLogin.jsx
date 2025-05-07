@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
-import { login } from "../apis/auth";
+import { adminLogin } from "../apis/auth";
 import EmailInput from "../components/common/EmailInput";
 import PasswordInput from "../components/common/PasswordInput";
 import BaseButton from "../components/common/BaseButton";
+import { HOME_PATH, RESET_PW_PATH } from "../constants/route.constants";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -20,9 +21,9 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const { accessToken } = await login(email, password);
-      setAccessToken(accessToken);
-      navigate("/dashboard");
+      const { accessToken } = await adminLogin(email, password);
+      setAccessToken(accessToken, "admin");
+      navigate(HOME_PATH);
     } catch (err) {
       const message = err.response?.data?.message || "로그인에 실패했습니다.";
       setError(message);
@@ -51,7 +52,7 @@ export default function AdminLogin() {
         </BaseButton>
 
         <div className="text-sm text-center text-textSub space-y-1">
-          <a href="/reset-password" className="underline">
+          <a href={RESET_PW_PATH} className="underline">
             비밀번호 찾기
           </a>
         </div>

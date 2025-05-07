@@ -1,11 +1,17 @@
 // src/pages/Login.jsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import { login } from "../apis/auth";
 import EmailInput from "../components/common/EmailInput";
 import PasswordInput from "../components/common/PasswordInput";
 import BaseButton from "../components/common/BaseButton";
+import {
+  ADMIN_LOGIN_PATH,
+  HOME_PATH,
+  RESET_PW_PATH,
+  SIGNUP_PATH,
+} from "../constants/route.constants";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,14 +27,22 @@ export default function Login() {
 
     try {
       const { accessToken } = await login(email, password);
-      setAccessToken(accessToken);
+      setAccessToken(accessToken, "student");
       // setUser({ id, name, role });
-      navigate("/dashboard");
+      navigate(HOME_PATH);
     } catch (err) {
       const message = err.response?.data?.message || "로그인에 실패했습니다.";
       setError(message);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      alert("이미 로그인 되었습니다!");
+      navigate(HOME_PATH);
+    }
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background font-noto px-4">
@@ -52,18 +66,18 @@ export default function Login() {
         </BaseButton>
 
         <div className="text-sm text-center text-textSub space-y-1">
-          <a href="/reset-password" className="underline">
+          <a href={RESET_PW_PATH} className="underline">
             비밀번호 찾기
           </a>
           <div>
-            <a href="/adminLogin" className="underline">
+            <a href={ADMIN_LOGIN_PATH} className="underline">
               관리자 로그인
             </a>
           </div>
 
           <div>
             계정이 없으신가요?{" "}
-            <a href="/signup" className="text-primary underline">
+            <a href={SIGNUP_PATH} className="text-primary underline">
               회원가입
             </a>
           </div>

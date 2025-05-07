@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuthStore from "../store/authStore";
 import Pagination from "../components/common/Pagination";
 import LectureModal from "../components/lecture/LectureModal";
 import DeleteConfirmModal from "../components/common/DeleteCofirmModal";
 import FilterSection from "../components/lecture/FilterSection";
 import LectureTable from "../components/lecture/LectureTable";
+import { fetchLectures } from "../apis/lecture";
 
 const sampleLectures = Array.from({ length: 20 }, (_, i) => ({
   id: i + 1,
@@ -31,7 +32,7 @@ export default function LectureList() {
   });
   const [lectures, setLectures] = useState(sampleLectures);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("create");
@@ -58,6 +59,26 @@ export default function LectureList() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchLectures({
+          mode: "full",
+          title: filters.title !== "" ? filters.title : null,
+          professor: filters.professor !== "" ? filters.professor : null,
+          page: currentPage - 1,
+        });
+        console.log(data);
+        setLectures(data.courses);
+        // setTotalItems(data.totalItems);
+      } catch (err) {
+        console.error("강의 목록 불러오기 실패:", err);
+      }
+    };
+
+    loadData();
+  }, [filters, currentPage]);
 
   return (
     <div className="min-h-screen bg-background px-6 py-10 font-noto">

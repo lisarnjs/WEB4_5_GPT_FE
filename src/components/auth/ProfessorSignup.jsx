@@ -3,6 +3,7 @@ import Select from "react-select";
 import EmailInput from "../common/EmailInput";
 import PasswordInput from "../common/PasswordInput";
 import BaseButton from "../common/BaseButton";
+import { LOGIN_PATH } from "../../constants/route.constants";
 
 const universityOptions = [
   { value: "1", label: "Unihub대학교" },
@@ -118,7 +119,7 @@ export default function ProfessorSignup({ formData, setFormData, onSubmit }) {
       <div className="text-sm text-center text-textSub space-y-1">
         <div>
           이미 계정이 있으신가요?{" "}
-          <a href="/login" className="text-primary underline">
+          <a href={LOGIN_PATH} className="text-primary underline">
             로그인하기
           </a>
         </div>
