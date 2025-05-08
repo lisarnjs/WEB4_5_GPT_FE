@@ -5,17 +5,17 @@ import PasswordInput from "../common/PasswordInput";
 import BaseButton from "../common/BaseButton";
 import { LOGIN_PATH } from "../../constants/route.constants";
 
-const universityOptions = [
-  { value: "1", label: "Unihub대학교" },
-  { value: "2", label: "AI대학교" },
-];
-
 const majorOptions = [
   { value: "101", label: "컴퓨터공학" },
   { value: "102", label: "경영학" },
 ];
 
-export default function ProfessorSignup({ formData, setFormData, onSubmit }) {
+export default function ProfessorSignup({
+  formData,
+  setFormData,
+  onSubmit,
+  universities,
+}) {
   const handleInput = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -67,7 +67,7 @@ export default function ProfessorSignup({ formData, setFormData, onSubmit }) {
       <div>
         <label className="text-sm text-textSub block mb-1">소속 학교</label>
         <Select
-          options={universityOptions}
+          options={universities}
           value={formData.university || null}
           onChange={(selected) => handleSelect(selected, "university")}
         />

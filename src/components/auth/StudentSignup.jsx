@@ -4,16 +4,13 @@ import EmailInput from "../common/EmailInput";
 import PasswordInput from "../common/PasswordInput";
 import BaseButton from "../common/BaseButton";
 import { LOGIN_PATH } from "../../constants/route.constants";
+import { majorListByUniversity } from "../../apis/university";
+import { useEffect, useState } from "react";
 
-const universityOptions = [
-  { value: "1", label: "Unihub대학교" },
-  { value: "2", label: "AI대학교" },
-];
-
-const majorOptions = [
-  { value: "101", label: "컴퓨터공학" },
-  { value: "102", label: "경영학" },
-];
+// const majorOptions = [
+//   { value: "101", label: "컴퓨터공학" },
+//   { value: "102", label: "경영학" },
+// ];
 
 const gradeOptions = [
   { value: "1", label: "1학년" },
@@ -27,7 +24,13 @@ const semesterOptions = [
   { value: "2", label: "2학기" },
 ];
 
-export default function StudentSignup({ formData, setFormData, onSubmit }) {
+export default function StudentSignup({
+  formData,
+  setFormData,
+  onSubmit,
+  universities,
+}) {
+  const [majorOptions, setMajorOptions] = useState([]);
   const handleInput = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -54,6 +57,25 @@ export default function StudentSignup({ formData, setFormData, onSubmit }) {
       semester: Number(formData.semester?.value),
     });
   };
+
+  useEffect(() => {
+    const fetchMajors = async () => {
+      if (!formData.university?.value) return;
+
+      try {
+        const res = await majorListByUniversity(formData.university.value);
+        const formattedMajors = res.data.data.map((m) => ({
+          value: m.id,
+          label: m.name,
+        }));
+        setMajorOptions(formattedMajors);
+      } catch (err) {
+        console.error("전공 목록 조회 실패", err);
+      }
+    };
+
+    fetchMajors();
+  }, [formData.university]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -85,7 +107,7 @@ export default function StudentSignup({ formData, setFormData, onSubmit }) {
       <div>
         <label className="text-sm text-textSub block mb-1">소속 학교</label>
         <Select
-          options={universityOptions}
+          options={universities}
           value={formData.university || null}
           onChange={(selected) => handleSelect(selected, "university")}
         />

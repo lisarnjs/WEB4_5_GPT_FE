@@ -2,11 +2,12 @@ import axiosInstance from "./axios";
 
 // 학생 로그인
 export const login = async (email, password) => {
+  console.log(email, password);
   const res = await axiosInstance.post("/api/members/login", {
     email,
     password,
   });
-
+  console.log(res.data);
   return res.data.data; // accessToken, refreshToken
 };
 
@@ -50,6 +51,16 @@ export const resetPassword = (email, password) =>
   });
 
 // 로그아웃, 토큰 만료
-export const logout = async () => {
+export const logout = async () =>
   await axiosInstance.post("/api/members/logout");
+
+// 학생 내 정보 조회
+export const getStudentMyData = async () => {
+  try {
+    const res = await axiosInstance.get("/api/members/me/student");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching student data:", error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
 };

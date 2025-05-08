@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
-  user: null, // 로그인 시 setUser({ id: 1, role: "PROFESSOR", name: "홍길동" })처럼 저장
+  user: null, // 로그인 시 setUser({ id: 1, role: "PROFESSOR", email: "email" })처럼 저장
   accessToken: null,
   actions: {
     setAccessToken: (token, role) => {

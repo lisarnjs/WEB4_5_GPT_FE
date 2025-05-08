@@ -15,7 +15,7 @@ import {
 
 export default function Login() {
   const navigate = useNavigate();
-  const { setAccessToken } = useAuthStore((state) => state.actions);
+  const { setAccessToken, setUser } = useAuthStore((state) => state.actions);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,9 +26,15 @@ export default function Login() {
     setError("");
 
     try {
-      const { accessToken } = await login(email, password);
-      setAccessToken(accessToken, "student");
-      // setUser({ id, name, role });
+      const {
+        accessToken,
+        email: userEmail,
+        id,
+        role,
+      } = await login(email, password);
+
+      setAccessToken(accessToken, role);
+      setUser({ id, email: userEmail, role });
       navigate(HOME_PATH);
     } catch (err) {
       const message = err.response?.data?.message || "로그인에 실패했습니다.";

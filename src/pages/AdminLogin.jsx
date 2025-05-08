@@ -7,6 +7,7 @@ import EmailInput from "../components/common/EmailInput";
 import PasswordInput from "../components/common/PasswordInput";
 import BaseButton from "../components/common/BaseButton";
 import { HOME_PATH, RESET_PW_PATH } from "../constants/route.constants";
+import { ADMIN } from "../constants/common.constants";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function AdminLogin() {
 
     try {
       const { accessToken } = await adminLogin(email, password);
-      setAccessToken(accessToken, "admin");
+      setAccessToken(accessToken, ADMIN);
       navigate(HOME_PATH);
     } catch (err) {
       const message = err.response?.data?.message || "로그인에 실패했습니다.";

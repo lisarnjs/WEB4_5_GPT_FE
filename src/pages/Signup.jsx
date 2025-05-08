@@ -1,8 +1,9 @@
 // src/pages/Signup.jsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import StudentSignup from "../components/auth/StudentSignup";
 import ProfessorSignup from "../components/auth/ProfessorSignup";
+import { universityList } from "../apis/university";
 
 const signupTypeOptions = [
   { value: "s", label: "학생" },
@@ -13,6 +14,24 @@ export default function Signup() {
   const [signupType, setSignupType] = useState(signupTypeOptions[0]);
   const [studentForm, setStudentForm] = useState({});
   const [professorForm, setProfessorForm] = useState({});
+  const [universities, setUniversities] = useState([]);
+
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      try {
+        const res = await universityList();
+        const formatted = res.data.data.map((u) => ({
+          value: u.id,
+          label: u.name,
+        }));
+        setUniversities(formatted);
+      } catch (error) {
+        console.error("대학 목록 조회 실패", error);
+      }
+    };
+
+    fetchUniversities();
+  }, []);
 
   const handleStudentSubmit = (data) => {
     console.log("✅ 학생 회원가입 데이터:", data);
@@ -33,6 +52,7 @@ export default function Signup() {
   //       majorId: data.majorId,
   //       grade: data.grade,
   //       semester: data.semester,
+  //       role: "Student"
   //     };
   //     const res = await signupStudent(payload);
   //     alert("학생 회원가입 완료 🎉");
@@ -50,6 +70,7 @@ export default function Signup() {
   //       employeeId: data.employeeId,
   //       universityId: data.universityId,
   //       majorId: data.majorId,
+  //        role: "Professor",
   //     };
   //     const res = await signupProfessor(payload);
   //     alert("교직원 회원가입 신청 완료 🎉\n승인을 기다려 주세요.");
@@ -80,12 +101,14 @@ export default function Signup() {
             formData={studentForm}
             setFormData={setStudentForm}
             onSubmit={handleStudentSubmit}
+            universities={universities}
           />
         ) : (
           <ProfessorSignup
             formData={professorForm}
             setFormData={setProfessorForm}
             onSubmit={handleProfessorSubmit}
+            universities={universities}
           />
         )}
       </div>

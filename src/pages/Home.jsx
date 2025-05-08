@@ -1,27 +1,39 @@
 // src/pages/Home.tsx
 
+import { useEffect, useState } from "react";
 import Header from "../components/common/Header";
 import ShortcutCard from "../components/common/ShortcutCard";
 import {
   MY_PAGE_PATH,
   REGISTER_COURSES_PATH,
 } from "../constants/route.constants";
+import { getStudentMyData } from "../apis/auth";
 
 export default function Home() {
-  const role = localStorage.getItem("role");
-  const GreetingMsg = {
-    student: "안녕하세요, 김하늘님!",
-    professor: "안녕하세요, 김교수님!",
-    admin: "안녕하세요, 관리자님!",
-  };
+  const [myData, setMyData] = useState(null);
+
+  useEffect(() => {
+    let ignore = false;
+    if (!ignore) {
+      try {
+        const res = getStudentMyData();
+        console.log(res);
+        setMyData(res);
+      } catch (err) {
+        console.log("err: ", err);
+      }
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-8 text-gray-800">
-      <Header />
-
+    <div className="min-h-screen bg-white px-6 py-8 text-gray-800">
       {/* 사용자 환영 메시지 */}
       <section className="mb-6 rounded-xl bg-white p-6 shadow">
-        <p className="text-lg font-semibold">{role && GreetingMsg[role]} 👋</p>
+        <p className="text-lg font-semibold">안녕하세요! 👋</p>
         <p className="mt-1 text-sm text-gray-600">
           컴퓨터공학과 / 소프트웨어전공 / 1학년 / A대학교
         </p>

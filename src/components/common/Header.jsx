@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../apis/auth";
 import {
+  HOME_PATH,
   LECUTRE_PATH,
   LOGIN_PATH,
   MY_PAGE_PATH,
@@ -24,8 +25,10 @@ export default function Header() {
   };
 
   return (
-    <nav className="mb-6 flex flex-wrap items-center justify-between border-b pb-4 text-sm text-gray-700">
-      <h2 className="text-3xl font-bold">UniHub</h2>
+    <nav className=" flex flex-wrap items-center justify-between border-b px-6 py-8 text-sm text-gray-700">
+      <h2 className="text-3xl font-bold">
+        <Link to={HOME_PATH}>UniHub</Link>
+      </h2>
       <div className="space-x-4">
         <Link to={REGISTER_COURSES_PATH}>수강신청</Link>
         <Link to={LECUTRE_PATH}>강의</Link>
