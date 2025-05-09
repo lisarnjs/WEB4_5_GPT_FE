@@ -18,7 +18,7 @@ export const fetchLectures = async ({
   if (professor) params.append("professor", professor);
   sort.forEach((s) => params.append("sort", s));
   if (typeof page === "number") params.append("page", page);
-  if (size) params.append("size", size);
+  if (typeof size === "number") params.append("size", size);
 
   const response = await axiosInstance.get(`/api/courses?${params.toString()}`);
   return response.data;

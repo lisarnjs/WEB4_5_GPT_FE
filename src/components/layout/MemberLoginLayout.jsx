@@ -17,7 +17,7 @@ export default function MemberLoginLayout() {
   return (
     <div className="min-h-screen bg-gray-50  text-gray-800">
       <Header />
-      <div className="bg-white">
+      <div className="bg-white h-[calc(100vh-theme(spacing.headerHeight))]">
         <Outlet />
       </div>
     </div>

@@ -5,7 +5,7 @@ export const ADMIN_LOGIN_PATH = "/adminLogin";
 export const RESET_PW_PATH = "/reset-password";
 
 // 마이페이지
-export const MY_PAGE_PATH = "/member/my-page";
+export const MY_PAGE_PATH = "/member/my-page/";
 
 // 메인 페이지
 export const HOME_PATH = "/member/home";

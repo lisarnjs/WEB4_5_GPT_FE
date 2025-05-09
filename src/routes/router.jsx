@@ -5,7 +5,6 @@ import AdminLogin from "../pages/AdminLogin";
 import ResetPassword from "../pages/ResetPassword";
 import LectureList from "../pages/LectureList";
 import MainPage from "../pages/Home";
-import MyPage from "../pages/MyPage";
 import RegisterCourses from "../pages/RegisterCourses";
 import {
   ADMIN_LOGIN_PATH,
@@ -18,6 +17,8 @@ import {
   SIGNUP_PATH,
 } from "../constants/route.constants";
 import MemberLoginLayout from "../components/layout/MemberLoginLayout";
+import StudentMyPage from "../pages/MyPage/Student";
+import ProfessorMypage from "../pages/MyPage/Professor";
 
 const router = createBrowserRouter([
   {
@@ -50,7 +51,10 @@ const router = createBrowserRouter([
       },
       {
         path: "my-page",
-        element: <MyPage />,
+        children: [
+          { path: "student", element: <StudentMyPage /> },
+          { path: "professor", element: <ProfessorMypage /> },
+        ],
       },
       { path: "register-courses", element: <RegisterCourses /> },
     ],

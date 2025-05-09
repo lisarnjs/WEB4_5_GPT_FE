@@ -22,6 +22,9 @@ export default {
         noto: ['"Noto Sans KR"', "sans-serif"],
         suit: ['"SUIT"', "sans-serif"],
       },
+      spacing: {
+        headerHeight: "100px", // Tailwind spacing으로 설정
+      },
     },
     screens: {
       ss: "480px",

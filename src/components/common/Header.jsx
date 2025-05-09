@@ -24,6 +24,8 @@ export default function Header() {
     }
   };
 
+  const myPageRole = localStorage.getItem("role").toLowerCase();
+
   return (
     <nav className=" flex flex-wrap items-center justify-between border-b px-6 py-8 text-sm text-gray-700">
       <h2 className="text-3xl font-bold">
@@ -34,7 +36,7 @@ export default function Header() {
         <Link to={LECUTRE_PATH}>강의</Link>
         {/* <Link to="/election">선거</Link>
         <Link to="/notices">공지사항</Link> */}
-        <Link to={MY_PAGE_PATH}>마이페이지</Link>
+        <Link to={`${MY_PAGE_PATH}${myPageRole}`}>마이페이지</Link>
         <button onClick={handleLogout}>로그아웃</button>
       </div>
     </nav>

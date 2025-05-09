@@ -1,4 +1,3 @@
-// ✅ 강의 목록 API 연동 + 페이지네이션 적용 완료
 import { useEffect, useState } from "react";
 import useAuthStore from "../store/authStore";
 import Pagination from "../components/common/Pagination";
@@ -65,7 +64,7 @@ export default function LectureList() {
   }, [filters.title, filters.professor, currentPage]);
 
   return (
-    <div className="min-h-screen  px-6 py-10 font-noto">
+    <div className="h-[calc(100vh-theme(spacing.headerHeight))]  px-6 py-10 font-noto">
       <div className="max-w-6xl mx-auto bg-white p-8 rounded-xl shadow space-y-8">
         <h2 className="text-3xl font-bold text-textMain">강의 목록</h2>
 

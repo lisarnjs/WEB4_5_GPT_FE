@@ -7,21 +7,50 @@ import {
   MY_PAGE_PATH,
   REGISTER_COURSES_PATH,
 } from "../constants/route.constants";
-import { getStudentMyData } from "../apis/auth";
+import { getProfessorMyData, getStudentMyData } from "../apis/auth";
+import { WelcomeSection } from "../components/home/WelcomeSection";
 
 export default function Home() {
   const [myData, setMyData] = useState(null);
+  // myData 에 담길 값은 아래와 같음.
+  // student 일 경우
+  // const { email, name, role, id, createdAt } = userInfo.member;
+  // const { grade, major, semester, studentCode, university } =
+  //   userInfo.studentProfile;
+
+  // professor 일 경우
+  // "member": {
+  //     "id": 2,
+  //     "email": "professor1@auni.ac.kr",
+  //     "name": "김교수",
+  //     "role": "PROFESSOR",
+  //     "createdAt": "2025-05-08T01:22:08.690147"
+  // },
+  // "professorProfile": {
+  //     "employeeId": "EMP20250001",
+  //     "university": "A대학교",
+  //     "major": "소프트웨어전공"
+  // }
+
+  const roleMyDataAPI = {
+    STUDENT: getStudentMyData,
+    PROFESSOR: getProfessorMyData,
+  };
 
   useEffect(() => {
     let ignore = false;
-    if (!ignore) {
-      try {
-        const res = getStudentMyData();
-        console.log(res);
-        setMyData(res);
-      } catch (err) {
-        console.log("err: ", err);
-      }
+    const role = localStorage.getItem("role");
+    if (!ignore && role) {
+      const fetchData = async () => {
+        try {
+          const res = await roleMyDataAPI[role]();
+          console.log(res.data);
+          setMyData(res.data);
+        } catch (err) {
+          console.log("err: ", err);
+        }
+      };
+      fetchData();
     }
 
     return () => {
@@ -30,14 +59,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white px-6 py-8 text-gray-800">
-      {/* 사용자 환영 메시지 */}
-      <section className="mb-6 rounded-xl bg-white p-6 shadow">
-        <p className="text-lg font-semibold">안녕하세요! 👋</p>
-        <p className="mt-1 text-sm text-gray-600">
-          컴퓨터공학과 / 소프트웨어전공 / 1학년 / A대학교
-        </p>
-      </section>
+    <div className=" bg-white px-6 py-8 text-gray-800">
+      {/* 환영 메시지 섹션 */}
+      {myData ? (
+        <WelcomeSection myData={myData} />
+      ) : (
+        <div className="mb-6 rounded-xl bg-white p-6 shadow animate-pulse">
+          <div className="h-6 w-64 bg-gray-100 rounded mb-2"></div>
+          <div className="h-4 w-80 bg-gray-100 rounded"></div>
+        </div>
+      )}
 
       {/* 공지사항 */}
       <section className="mb-6 rounded-xl bg-white p-6 shadow">

@@ -64,3 +64,64 @@ export const getStudentMyData = async () => {
     throw error; // Re-throw the error to handle it in the calling function
   }
 };
+
+// 교수 내 정보 조회
+export const getProfessorMyData = async () => {
+  try {
+    const res = await axiosInstance.get("/api/members/me/professor");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching student data:", error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+};
+
+// 비밀번호 확인 API
+export const verifyPassword = async (password) => {
+  const response = await axiosInstance.post("/api/members/me/verify-password", {
+    password,
+  });
+  return response.data;
+};
+
+// 이메일 변경
+export const updateEmail = async (newEmail) => {
+  const res = await axiosInstance.patch("/api/members/me/email", {
+    newEmail,
+  });
+  return res.data;
+};
+
+// 비밀번호 변경
+export const changePassword = async (password, newPassword) => {
+  const res = await axiosInstance.patch("/api/members/me/password", {
+    password,
+    newPassword,
+  });
+  return res.data;
+};
+
+// 교수 전공 변경 요청
+export const updateProfessorMajor = async (majorId) => {
+  try {
+    const res = await axiosInstance.patch("/api/members/me/major", {
+      majorId,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("전공 변경 실패:", error);
+    throw error;
+  }
+};
+
+// 교수 내 강의 목록 조회
+export const getProfessorMyLectures = async () => {
+  const res = await axiosInstance.get("/api/members/me/courses");
+  return res.data;
+};
+
+// 회원 탈퇴
+export const withdrawMember = async () => {
+  const res = await axiosInstance.delete("/api/members/me");
+  return res.data;
+};
