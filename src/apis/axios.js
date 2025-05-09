@@ -50,7 +50,8 @@ axiosInstance.interceptors.response.use(
         // 리프레시 실패시 처리 (로그아웃 등)
         localStorage.removeItem("accessToken");
         localStorage.removeItem("role");
-        window.location.href = "/"; // 로그인 페이지로 이동
+        //window.location.href = "/"; // 로그인 페이지로 이동
+        console.log(refreshError);
         return Promise.reject(refreshError);
       }
     }

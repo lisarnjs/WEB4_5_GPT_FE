@@ -1,22 +1,28 @@
+// pages/LectureList.jsx
 import { useEffect, useState } from "react";
-import useAuthStore from "../store/authStore";
+// import useAuthStore from "../store/authStore";
 import Pagination from "../components/common/Pagination";
 import LectureModal from "../components/lecture/LectureModal";
 import DeleteConfirmModal from "../components/common/DeleteCofirmModal";
 import FilterSection from "../components/lecture/FilterSection";
 import LectureTable from "../components/lecture/LectureTable";
 import { fetchLectures } from "../apis/lecture";
+import { majorListByUniversity } from "../apis/university";
 
 const itemsPerPage = 5;
 
 export default function LectureList() {
-  const [filters, setFilters] = useState({
+  const defaultFilters = {
     major: "",
     grade: "1학년",
     semester: "1학기",
     professor: "",
     title: "",
-  });
+  };
+
+  const [filters, setFilters] = useState(defaultFilters); // UI용
+  const [searchParams, setSearchParams] = useState(defaultFilters); // API용
+
   const [lectures, setLectures] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -28,12 +34,34 @@ export default function LectureList() {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const user = useAuthStore((state) => state.user);
-  const isStaff = user?.role === "PROFESSOR" || user?.role === "ADMIN";
+  // const user = useAuthStore((state) => state.user);
+  const isStaff =
+    localStorage.getItem("role") === "PROFESSOR" ||
+    localStorage.getItem("role") === "ADMIN";
+
+  const profileData = JSON.parse(sessionStorage.getItem("profile"));
+  const [majors, setMajors] = useState([]);
+
+  useEffect(() => {
+    majorListByUniversity(profileData.universityId)
+      .then((res) => setMajors(res.data.data))
+      .catch((err) => console.error("전공 목록 불러오기 실패:", err));
+  }, [profileData.universityId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleReset = () => {
+    setFilters(defaultFilters);
+    setSearchParams(defaultFilters); // 검색 조건도 초기화
+    setCurrentPage(1);
+  };
+
+  const handleSearch = () => {
+    setSearchParams(filters);
+    setCurrentPage(1); // 조회 시 1페이지부터 시작
   };
 
   const handleDelete = () => {
@@ -42,29 +70,28 @@ export default function LectureList() {
     setDeleteTarget(null);
   };
 
-  const loadLectures = async () => {
-    try {
-      const data = await fetchLectures({
-        mode: "FULL",
-        title: filters.title || null,
-        professor: filters.professor || null,
-        page: currentPage - 1,
-        size: itemsPerPage,
-      });
-      setLectures(data.data.content);
-      setTotalItems(data.data.totalElements);
-    } catch (err) {
-      console.error("강의 목록 불러오기 실패:", err);
-    }
-  };
-
   useEffect(() => {
+    const loadLectures = async () => {
+      try {
+        const data = await fetchLectures({
+          mode: "FULL",
+          title: searchParams.title || null,
+          profName: searchParams.professor || null,
+          page: currentPage - 1,
+          size: itemsPerPage,
+        });
+        setLectures(data.data.content);
+        setTotalItems(data.data.totalElements);
+      } catch (err) {
+        console.error("강의 목록 불러오기 실패:", err);
+      }
+    };
+
     loadLectures();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.title, filters.professor, currentPage]);
+  }, [searchParams, currentPage]);
 
   return (
-    <div className="h-[calc(100vh-theme(spacing.headerHeight))]  px-6 py-10 font-noto">
+    <div className="h-[calc(100vh-theme(spacing.headerHeight))] px-6 py-10 font-noto">
       <div className="max-w-6xl mx-auto bg-white p-8 rounded-xl shadow space-y-8">
         <h2 className="text-3xl font-bold text-textMain">강의 목록</h2>
 
@@ -77,6 +104,9 @@ export default function LectureList() {
             setEditData(null);
             setModalOpen(true);
           }}
+          onReset={handleReset}
+          majors={majors}
+          onSearch={handleSearch}
         />
 
         <LectureTable
@@ -108,7 +138,7 @@ export default function LectureList() {
           setEditData(null);
         }}
         onSubmit={(data) => {
-          if (modalMode === "EDIT") {
+          if (modalMode === "edit") {
             setLectures((prev) =>
               prev.map((l) => (l.id === data.id ? data : l))
             );

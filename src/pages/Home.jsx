@@ -45,6 +45,18 @@ export default function Home() {
         try {
           const res = await roleMyDataAPI[role]();
           console.log(res.data);
+
+          sessionStorage.setItem(
+            "profile",
+            JSON.stringify(
+              res.data?.studentProfile || res.data?.professorProfile || null
+            )
+          );
+          sessionStorage.setItem(
+            "member",
+            JSON.stringify(res.data?.member || null)
+          );
+
           setMyData(res.data);
         } catch (err) {
           console.log("err: ", err);
