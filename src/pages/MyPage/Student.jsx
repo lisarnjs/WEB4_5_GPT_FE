@@ -1,12 +1,12 @@
 // pages/mypage/StudentMypage.jsx
 import { useState } from "react";
-import MypageSidebar from "../../components/mypage/MypageSidebar";
 import StudentInfo from "../../components/mypage/StudentInfo";
 import PasswordCheck from "../../components/mypage/PasswordCheck";
 import EmailChangeForm from "../../components/mypage/EmailChangeForm";
 import PasswordChangeForm from "../../components/mypage/PasswordChangeForm";
 import WithdrawForm from "../../components/mypage/WithdrawForm";
 import MajorChangeForm from "../../components/mypage/MajorChangeForm";
+import MypageSidebar from "../../components/mypage/MyPageSidebar";
 
 export default function StudentMypage() {
   const [selectedMenu, setSelectedMenu] = useState("info");
