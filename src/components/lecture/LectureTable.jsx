@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { dayToKorList } from "../../constants/date.constants";
 
 export default function LectureTable({ lectures, isStaff, onEdit, onDelete }) {
@@ -22,23 +23,31 @@ export default function LectureTable({ lectures, isStaff, onEdit, onDelete }) {
           </tr>
         </thead>
         <tbody>
-          {lectures.map((lecture) => (
-            <tr key={lecture.id} className="text-center border-b">
-              <td className="py-2">{lecture.university}</td>
-              <td className="py-2">{lecture.major}</td>
-              <td>{lecture.title}</td>
-              <td>{lecture.professor}</td>
-              <td>{lecture.location}</td>
-              <td>
+          {lectures.map((lecture, index) => (
+            <tr
+              key={lecture.id}
+              className={clsx(
+                "text-center border-t",
+                index % 2 !== 0 && "bg-gray-50"
+              )}
+            >
+              <td className="py-2 align-middle">{lecture.university}</td>
+              <td className="py-2 align-middle">{lecture.major}</td>
+              <td className="py-2 align-middle">{lecture.title}</td>
+              <td className="py-2 align-middle">{lecture.professor}</td>
+              <td className="py-2 align-middle">{lecture.location}</td>
+              <td className="py-2 align-middle">
                 {lecture.schedule.map((s) => (
                   <p>
                     {dayToKorList[s.day] ?? ""} {s.startTime}-{s.endTime}
                   </p>
                 ))}
               </td>
-              <td>{lecture.coursePlanAttachment ? "📄" : "-"}</td>
+              <td className="py-2 align-middle">
+                {lecture.coursePlanAttachment ? "📄" : "-"}
+              </td>
               {isStaff && (
-                <td>
+                <td className="py-2 align-middle">
                   <button
                     onClick={() => onEdit(lecture)}
                     className="hover:text-primary"
@@ -48,7 +57,7 @@ export default function LectureTable({ lectures, isStaff, onEdit, onDelete }) {
                 </td>
               )}
               {isStaff && (
-                <td>
+                <td className="py-2 align-middle">
                   <button
                     onClick={() => onDelete(lecture)}
                     className="hover:text-red-500"
@@ -57,10 +66,10 @@ export default function LectureTable({ lectures, isStaff, onEdit, onDelete }) {
                   </button>
                 </td>
               )}
-              <td>{lecture.credit}</td>
-              <td>{lecture.capacity}</td>
-              <td>{lecture.grade}</td>
-              <td>{lecture.semester}</td>
+              <td className="py-2 align-middle">{lecture.credit}</td>
+              <td className="py-2 align-middle">{lecture.capacity}</td>
+              <td className="py-2 align-middle">{lecture.grade}</td>
+              <td className="py-2 align-middle">{lecture.semester}</td>
             </tr>
           ))}
         </tbody>

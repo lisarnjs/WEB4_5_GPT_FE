@@ -9,16 +9,14 @@ import App from "./App.jsx";
 //   worker.start();
 // }
 
-// 🧪 테스트용 사용자 강제로 설정
-import useAuthStore from "./store/authStore.js";
-useAuthStore.getState().actions.setUser({
-  id: 1,
-  name: "홍길동",
-  role: "ADMIN", // STUDENT | PROFESSOR | ADMIN
-});
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </StrictMode>
 );

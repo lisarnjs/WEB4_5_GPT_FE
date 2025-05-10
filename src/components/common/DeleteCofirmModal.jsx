@@ -3,6 +3,8 @@ export default function DeleteConfirmModal({
   onCancel,
   onConfirm,
   message,
+  confirmBtnMessage = "삭제",
+  confirmDisabled,
 }) {
   if (!isOpen) return null;
 
@@ -20,8 +22,9 @@ export default function DeleteConfirmModal({
           <button
             onClick={onConfirm}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            disabled={confirmDisabled}
           >
-            삭제
+            {confirmBtnMessage}
           </button>
         </div>
       </div>

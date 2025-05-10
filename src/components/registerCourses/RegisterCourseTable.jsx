@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import { dayToKorList } from "../../constants/date.constants";
 
-export default function RegisterCourseTable({ courses }) {
+export default function RegisterCourseTable({ courses, onEnroll }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm  table-auto border">
@@ -16,6 +17,7 @@ export default function RegisterCourseTable({ courses }) {
             <th>시간표</th>
             <th>정원</th>
             <th>잔여</th>
+            <th>수강신청</th>
           </tr>
         </thead>
         <tbody>
@@ -26,24 +28,38 @@ export default function RegisterCourseTable({ courses }) {
               </td>
             </tr>
           ) : (
-            courses.map((course) => (
-              <tr key={course.courseId} className="text-center border-t">
-                <td className="py-2">{course.major}</td>
-                <td>{course.title}</td>
-                <td>{course.professor}</td>
-                <td>{course.grade}학년</td>
-                <td>{course.semester}학기</td>
-                <td>{course.credit}</td>
-                <td>{course.location}</td>
-                <td>
+            courses.map((course, index) => (
+              <tr
+                key={course.courseId}
+                className={clsx(
+                  "text-center border-t",
+                  index % 2 !== 0 && "bg-gray-50"
+                )}
+              >
+                <td className="py-2 align-middle">{course.major}</td>
+                <td className="py-2 align-middle">{course.title}</td>
+                <td className="py-2 align-middle">{course.professor}</td>
+                <td className="py-2 align-middle">{course.grade}학년</td>
+                <td className="py-2 align-middle">{course.semester}학기</td>
+                <td className="py-2 align-middle">{course.credit}</td>
+                <td className="py-2 align-middle">{course.location}</td>
+                <td className="py-2 align-middle">
                   {course.schedule.map((s) => (
                     <p>
                       {dayToKorList[s.day] ?? ""} {s.startTime}-{s.endTime}
                     </p>
                   ))}
                 </td>
-                <td>{course.capacity}</td>
-                <td>{course.availableSeats}</td>
+                <td className="py-2 align-middle">{course.capacity}</td>
+                <td className="py-2 align-middle">{course.availableSeats}</td>
+                <td className="py-2 align-middle">
+                  <button
+                    className="bg-blue-500 text-white px-2 py-2 rounded text-xs hover:bg-blue-600"
+                    onClick={() => onEnroll(course.id)}
+                  >
+                    수강신청
+                  </button>
+                </td>
               </tr>
             ))
           )}

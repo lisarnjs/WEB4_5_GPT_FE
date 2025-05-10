@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
             withCredentials: true, // 쿠키 전송 필수
           }
         );
-        alert("interceptor: ", data);
+
         // 2. 새 accessToken 저장
         if (data.code === 200) {
           localStorage.setItem("accessToken", data.data.accessToken);
@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
         // 리프레시 실패시 처리 (로그아웃 등)
         localStorage.removeItem("accessToken");
         localStorage.removeItem("role");
-        //window.location.href = "/"; // 로그인 페이지로 이동
+        window.location.href = "/"; // 로그인 페이지로 이동
         console.log(refreshError);
         return Promise.reject(refreshError);
       }
