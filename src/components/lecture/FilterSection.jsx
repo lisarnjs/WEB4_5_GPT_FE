@@ -1,8 +1,11 @@
 // components/lecture/FilterSection.jsx
 import BaseButton from "../common/BaseButton";
 
-const grades = ["1학년", "2학년", "3학년", "4학년"];
-const semesters = ["1학기", "2학기"];
+// const grades = ["1학년", "2학년", "3학년", "4학년"];
+// const semesters = ["1학기", "2학기"];
+
+const grades = [1, 2, 3, 4];
+const semesters = [1, 2];
 
 export default function FilterSection({
   filters,
@@ -27,7 +30,7 @@ export default function FilterSection({
       >
         <option value="">전체 전공</option>
         {majors.map((m) => (
-          <option key={m.name} value={m.name}>
+          <option key={m.name} value={m.id}>
             {m.name}
           </option>
         ))}
@@ -40,8 +43,11 @@ export default function FilterSection({
         value={filters.grade}
         onChange={onChange}
       >
+        <option value="">전체 학년</option>
         {grades.map((g) => (
-          <option key={g}>{g}</option>
+          <option key={g} value={g}>
+            {g}학년
+          </option>
         ))}
       </select>
 
@@ -52,8 +58,11 @@ export default function FilterSection({
         value={filters.semester}
         onChange={onChange}
       >
+        <option value="">전체 학기</option>
         {semesters.map((s) => (
-          <option key={s}>{s}</option>
+          <option key={s} value={s}>
+            {s}학기
+          </option>
         ))}
       </select>
 

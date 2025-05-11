@@ -27,17 +27,35 @@ export default function Header() {
   const myPageRole = localStorage.getItem("role").toLowerCase();
 
   return (
-    <nav className=" flex flex-wrap items-center justify-between border-b px-6 py-8 text-sm text-gray-700">
+    <nav className=" flex flex-wrap items-center justify-between border-b px-6 py-8 text-sm text-gray-400">
       <h2 className="text-3xl font-bold">
-        <Link to={HOME_PATH}>UniHub</Link>
+        <Link to={HOME_PATH} className="text-md font-bold text-gray-700">
+          UniHub
+        </Link>
       </h2>
       <div className="space-x-4">
-        <Link to={REGISTER_COURSES_PATH}>수강신청</Link>
-        <Link to={LECUTRE_PATH}>강의</Link>
+        {myPageRole === "student" && (
+          <Link
+            to={REGISTER_COURSES_PATH}
+            className="text-md  hover:text-gray-700"
+          >
+            수강신청
+          </Link>
+        )}
+        <Link to={LECUTRE_PATH} className="text-md  hover:text-gray-700">
+          강의
+        </Link>
         {/* <Link to="/election">선거</Link>
         <Link to="/notices">공지사항</Link> */}
-        <Link to={`${MY_PAGE_PATH}${myPageRole}`}>마이페이지</Link>
-        <button onClick={handleLogout}>로그아웃</button>
+        <Link
+          to={`${MY_PAGE_PATH}${myPageRole}`}
+          className="text-md  hover:text-gray-700"
+        >
+          마이페이지
+        </Link>
+        <button onClick={handleLogout} className="text-md  hover:text-gray-700">
+          로그아웃
+        </button>
       </div>
     </nav>
   );

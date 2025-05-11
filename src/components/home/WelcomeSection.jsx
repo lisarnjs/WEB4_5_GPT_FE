@@ -18,8 +18,8 @@ export function WelcomeSection({ myData }) {
 
   return (
     <section className="mb-6 rounded-xl bg-white p-6 shadow font-suit">
-      <p className="text-lg font-semibold text-textMain">{welcomeMessage}</p>
-      <p className="mt-1 text-sm text-textSub">{userInfoParts.join(" / ")}</p>
+      <p className="text-xl font-semibold text-textMain">{welcomeMessage}</p>
+      <p className="mt-1 text-lg text-textSub">{userInfoParts.join(" / ")}</p>
     </section>
   );
 }

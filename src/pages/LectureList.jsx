@@ -1,94 +1,115 @@
-// pages/LectureList.jsx
 import { useEffect, useState } from "react";
-// import useAuthStore from "../store/authStore";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Pagination from "../components/common/Pagination";
 import LectureModal from "../components/lecture/LectureModal";
 import DeleteConfirmModal from "../components/common/DeleteCofirmModal";
 import FilterSection from "../components/lecture/FilterSection";
 import LectureTable from "../components/lecture/LectureTable";
-import { fetchLectures } from "../apis/lecture";
+import {
+  fetchLectures,
+  deleteLecture,
+  createLecture,
+  updateLecture,
+} from "../apis/lecture";
 import { majorListByUniversity } from "../apis/university";
 
 const itemsPerPage = 5;
 
 export default function LectureList() {
+  const queryClient = useQueryClient();
+  const profile = JSON.parse(sessionStorage.getItem("profile"));
+
+  // 🔸 상태 관리
   const defaultFilters = {
     major: "",
-    grade: "1학년",
-    semester: "1학기",
+    grade: "",
+    semester: "",
     professor: "",
     title: "",
   };
 
-  const [filters, setFilters] = useState(defaultFilters); // UI용
-  const [searchParams, setSearchParams] = useState(defaultFilters); // API용
-
-  const [lectures, setLectures] = useState([]);
+  const [filters, setFilters] = useState(defaultFilters);
+  const [searchParams, setSearchParams] = useState(defaultFilters);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [editData, setEditData] = useState(null);
-
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  // const user = useAuthStore((state) => state.user);
-  const isStaff =
-    localStorage.getItem("role") === "PROFESSOR" ||
-    localStorage.getItem("role") === "ADMIN";
-
-  const profileData = JSON.parse(sessionStorage.getItem("profile"));
-  const [majors, setMajors] = useState([]);
-
   useEffect(() => {
-    majorListByUniversity(profileData.universityId)
-      .then((res) => setMajors(res.data.data))
-      .catch((err) => console.error("전공 목록 불러오기 실패:", err));
-  }, [profileData.universityId]);
+    console.log(searchParams);
+  }, [searchParams]);
 
+  // 🔸 권한 확인
+  const isStaff = ["PROFESSOR", "ADMIN"].includes(localStorage.getItem("role"));
+
+  // 🔸 전공 목록 조회
+  const { data: majors = [] } = useQuery({
+    queryKey: ["majors", profile?.universityId],
+    queryFn: () =>
+      majorListByUniversity(profile.universityId).then((res) => res.data.data),
+    enabled: !!profile?.universityId,
+  });
+
+  // 🔸 강의 목록 조회
+  const {
+    data: lecturesData,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["lectures", searchParams, currentPage],
+    queryFn: () =>
+      fetchLectures({
+        mode: "FULL",
+        title: searchParams.title,
+        profName: searchParams.professor,
+        majorId: searchParams.major,
+        grade: searchParams.grade,
+        semester: searchParams.semester,
+        page: currentPage - 1,
+        size: itemsPerPage,
+      }),
+    keepPreviousData: true,
+  });
+
+  const lectures = lecturesData?.data?.content || [];
+  const totalItems = lecturesData?.data?.totalElements || 0;
+
+  // 🔸 강의 삭제
+  const deleteMutation = useMutation({
+    mutationFn: deleteLecture,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lectures"] });
+      setDeleteTarget(null);
+    },
+  });
+
+  // 🔸 강의 생성/수정
+  const lectureMutation = useMutation({
+    mutationFn: (data) =>
+      modalMode === "create" ? createLecture(data) : updateLecture(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lectures"] });
+      setModalOpen(false);
+    },
+  });
+
+  // 🔸 핸들러 함수
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleReset = () => {
-    setFilters(defaultFilters);
-    setSearchParams(defaultFilters); // 검색 조건도 초기화
+  const handleSearch = () => {
+    setSearchParams(filters);
     setCurrentPage(1);
   };
 
-  const handleSearch = () => {
-    setSearchParams(filters);
-    setCurrentPage(1); // 조회 시 1페이지부터 시작
+  const handleReset = () => {
+    setFilters(defaultFilters);
+    setSearchParams(defaultFilters);
+    setCurrentPage(1);
   };
-
-  const handleDelete = () => {
-    setLectures((prev) => prev.filter((l) => l.id !== deleteTarget.id));
-    setDeleteModalOpen(false);
-    setDeleteTarget(null);
-  };
-
-  useEffect(() => {
-    const loadLectures = async () => {
-      try {
-        const data = await fetchLectures({
-          mode: "FULL",
-          title: searchParams.title || null,
-          profName: searchParams.professor || null,
-          page: currentPage - 1,
-          size: itemsPerPage,
-        });
-        setLectures(data.data.content);
-        setTotalItems(data.data.totalElements);
-      } catch (err) {
-        console.error("강의 목록 불러오기 실패:", err);
-      }
-    };
-
-    loadLectures();
-  }, [searchParams, currentPage]);
 
   return (
     <div className="h-[calc(100vh-theme(spacing.headerHeight))] px-6 py-10 font-noto">
@@ -109,6 +130,12 @@ export default function LectureList() {
           onSearch={handleSearch}
         />
 
+        {isError && (
+          <div className="bg-red-50 text-red-500 p-4 rounded mb-4 text-center">
+            {error?.message || "강의 목록을 불러오는 데 실패했습니다."}
+          </div>
+        )}
+
         <LectureTable
           lectures={lectures}
           isStaff={isStaff}
@@ -117,10 +144,7 @@ export default function LectureList() {
             setEditData(lecture);
             setModalOpen(true);
           }}
-          onDelete={(lecture) => {
-            setDeleteTarget(lecture);
-            setDeleteModalOpen(true);
-          }}
+          onDelete={setDeleteTarget}
         />
 
         <Pagination
@@ -131,34 +155,31 @@ export default function LectureList() {
         />
       </div>
 
+      {/* 강의 생성/수정 모달 */}
+      {/* <LectureModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={lectureMutation.mutate}
+        mode={modalMode}
+        initialData={editData}
+        isSubmitting={lectureMutation.isLoading}
+      /> */}
       <LectureModal
         isOpen={isModalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setEditData(null);
-        }}
-        onSubmit={(data) => {
-          if (modalMode === "edit") {
-            setLectures((prev) =>
-              prev.map((l) => (l.id === data.id ? data : l))
-            );
-          } else {
-            setLectures((prev) => [...prev, { ...data, id: Date.now() }]);
-          }
-          setModalOpen(false);
-        }}
+        onClose={() => setModalOpen(false)}
+        onSubmit={lectureMutation.mutate}
+        isSubmitting={lectureMutation.isLoading}
         mode={modalMode}
         initialData={editData}
       />
 
+      {/* 삭제 확인 모달 */}
       <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
+        isOpen={!!deleteTarget}
         message={`"${deleteTarget?.title}" 강의를 삭제하시겠습니까?`}
-        onCancel={() => {
-          setDeleteModalOpen(false);
-          setDeleteTarget(null);
-        }}
-        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
+        confirmDisabled={deleteMutation.isLoading}
       />
     </div>
   );
