@@ -40,7 +40,15 @@ export default function Home() {
   useEffect(() => {
     let ignore = false;
     const role = localStorage.getItem("role");
-    if (!ignore && role) {
+    const needToFetchMyDataRole = role === "STUDENT" || role === "PROFESSOR";
+    if (!ignore && role === "ADMIN") {
+      setMyData({
+        member: {
+          role: "ADMIN",
+        },
+      });
+    }
+    if (!ignore && needToFetchMyDataRole) {
       const fetchData = async () => {
         try {
           const res = await roleMyDataAPI[role]();

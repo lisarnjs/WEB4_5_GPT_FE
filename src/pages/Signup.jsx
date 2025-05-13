@@ -1,9 +1,11 @@
-// src/pages/Signup.jsx
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import StudentSignup from "../components/auth/StudentSignup";
 import ProfessorSignup from "../components/auth/ProfessorSignup";
 import { universityList } from "../apis/university";
+import { signupStudent, signupProfessor } from "../apis/auth";
+import { useNavigate } from "react-router-dom";
+import { LOGIN_PATH } from "../constants/route.constants";
 
 const signupTypeOptions = [
   { value: "s", label: "학생" },
@@ -11,6 +13,7 @@ const signupTypeOptions = [
 ];
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [signupType, setSignupType] = useState(signupTypeOptions[0]);
   const [studentForm, setStudentForm] = useState({});
   const [professorForm, setProfessorForm] = useState({});
@@ -29,55 +32,38 @@ export default function Signup() {
         console.error("대학 목록 조회 실패", error);
       }
     };
-
     fetchUniversities();
   }, []);
 
-  const handleStudentSubmit = (data) => {
-    console.log("✅ 학생 회원가입 데이터:", data);
+  // 학생 회원가입 처리
+  const handleStudentSubmit = async (data) => {
+    try {
+      const payload = {
+        ...data,
+        role: "STUDENT",
+      };
+      await signupStudent(payload);
+      alert("학생 회원가입 완료 🎉");
+      navigate(LOGIN_PATH);
+    } catch (error) {
+      alert(error.response?.data?.message || "학생 회원가입 실패");
+    }
   };
 
-  const handleProfessorSubmit = (data) => {
-    console.log("✅ 교직원 회원가입 데이터:", data);
+  // 교수 회원가입 처리
+  const handleProfessorSubmit = async (data) => {
+    try {
+      const payload = {
+        ...data,
+        role: "PROFESSOR",
+      };
+      await signupProfessor(payload);
+      alert("교직원 가입 신청 완료 🎉\n관리자의 승인을 기다려 주세요.");
+      navigate(LOGIN_PATH);
+    } catch (error) {
+      alert(error.response?.data?.message || "교직원 회원가입 실패");
+    }
   };
-
-  // const handleStudentSubmit = async (data) => {
-  //   try {
-  //     const payload = {
-  //       email: data.email,
-  //       password: data.password,
-  //       name: data.name,
-  //       studentCode: data.studentCode,
-  //       universityId: data.universityId,
-  //       majorId: data.majorId,
-  //       grade: data.grade,
-  //       semester: data.semester,
-  //       role: "Student"
-  //     };
-  //     const res = await signupStudent(payload);
-  //     alert("학생 회원가입 완료 🎉");
-  //   } catch (error) {
-  //     alert(error.response?.data?.message || "학생 회원가입 실패");
-  //   }
-  // };
-
-  // const handleProfessorSubmit = async (data) => {
-  //   try {
-  //     const payload = {
-  //       email: data.email,
-  //       password: data.password,
-  //       name: data.name,
-  //       employeeId: data.employeeId,
-  //       universityId: data.universityId,
-  //       majorId: data.majorId,
-  //        role: "Professor",
-  //     };
-  //     const res = await signupProfessor(payload);
-  //     alert("교직원 회원가입 신청 완료 🎉\n승인을 기다려 주세요.");
-  //   } catch (error) {
-  //     alert(error.response?.data?.message || "교직원 회원가입 실패");
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-10 font-noto">

@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../apis/auth";
 import {
+  ADMIN_MANAGE_USER_PATH,
   HOME_PATH,
   LECUTRE_PATH,
   LOGIN_PATH,
@@ -42,11 +43,21 @@ export default function Header() {
             수강신청
           </Link>
         )}
-        <Link to={LECUTRE_PATH} className="text-md  hover:text-gray-700">
-          강의
-        </Link>
+        {myPageRole !== "admin" && (
+          <Link to={LECUTRE_PATH} className="text-md  hover:text-gray-700">
+            강의
+          </Link>
+        )}
         {/* <Link to="/election">선거</Link>
         <Link to="/notices">공지사항</Link> */}
+        {myPageRole === "admin" && (
+          <Link
+            to={ADMIN_MANAGE_USER_PATH}
+            className="text-md  hover:text-gray-700"
+          >
+            관리자 페이지
+          </Link>
+        )}
         <Link
           to={`${MY_PAGE_PATH}${myPageRole}`}
           className="text-md  hover:text-gray-700"

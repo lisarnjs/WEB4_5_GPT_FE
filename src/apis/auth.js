@@ -21,27 +21,61 @@ export const adminLogin = async (email, password) => {
   return res.data.data; // accessToken, refreshToken
 };
 
-// 학생 회원가입
-export const signupStudent = (data) =>
-  axiosInstance.post("/members/signup/student", {
+/**
+ * 학생 회원가입
+ * @param {Object} data - 회원가입 폼 데이터
+ * @returns {Promise}
+ */
+export const signupStudent = async (data) => {
+  // data: { email, password, name, studentCode, universityId, majorId, grade, semester }
+  const res = await axiosInstance.post("/api/members/signup/student", {
     ...data,
-    role: "Student",
+    role: "STUDENT",
   });
+  return res.data; // { code, message, data }
+};
 
-// 교직원 회원가입
-export const signupProfessor = (data) =>
-  axiosInstance.post("/members/signup/professor", {
+/**
+ * 교수 회원가입
+ * @param {Object} data - 교수 회원가입 폼 데이터
+ * @returns {Promise}
+ */
+export const signupProfessor = async (data) => {
+  // data: { email, password, name, employeeId, universityId, majorId }
+  const res = await axiosInstance.post("/api/members/signup/professor", {
     ...data,
-    role: "Professor",
+    role: "PROFESSOR",
   });
+  return res.data; // { code, message, data }
+};
+/**
+ * 이메일 인증 코드 요청
+ * @param {string} email - 인증할 이메일
+ * @param {string} purpose - 인증 목적 ('SIGNUP' | 'PASSWORD_RESET' | 'EMAIL_CHANGE')
+ * @returns {Promise}
+ */
+export const requestEmailCode = async (email, purpose = "SIGNUP") => {
+  // purpose: SIGNUP(회원가입), PASSWORD_RESET(비밀번호 재설정), EMAIL_CHANGE(이메일 변경)
+  const res = await axiosInstance.post(`/api/members/email/${purpose}/code`, {
+    email,
+  });
+  return res.data; // { code, message, data }
+};
 
-// 이메일 인증 요청
-export const requestEmailCode = (email) =>
-  axiosInstance.post("/members/email/code", { email });
-
-// 이메일 인증 코드 확인
-export const verifyEmailCode = (email, code) =>
-  axiosInstance.post("/members/email/verify", { email, code });
+/**
+ * 이메일 인증 코드 확인
+ * @param {string} email - 인증할 이메일
+ * @param {string} emailCode - 인증번호
+ * @param {string} purpose - 인증 목적 ('SIGNUP' | 'PASSWORD_RESET' | 'EMAIL_CHANGE')
+ * @returns {Promise}
+ */
+export const verifyEmailCode = async (email, emailCode, purpose = "SIGNUP") => {
+  const res = await axiosInstance.post(`/api/members/email/${purpose}/verify`, {
+    email,
+    emailCode,
+  });
+  return res.data; // { code, message, data }
+};
 
 // 비밀번호 재설정
 export const resetPassword = (email, password) =>

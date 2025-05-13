@@ -48,6 +48,7 @@ export const createLecture = async (courseData) => {
  * @returns {Promise<Object>} 수정된 강의 데이터
  */
 export const updateLecture = async (courseData) => {
+  console.log(courseData);
   const response = await axiosInstance.put(
     `/api/courses/${courseData.id}`,
     courseData
@@ -97,5 +98,15 @@ export const cancelEnrollment = async (enrollmentId) => {
  */
 export const enrollCourse = async (courseId) => {
   const response = await axiosInstance.post("/api/enrollments", { courseId });
+  return response.data;
+};
+
+/**
+ * 내 수강 신청 기간 조회 API
+ * GET /api/enrollments/periods/me
+ * @returns {Promise<Object>} 수강 신청 기간 정보 (isEnrollmentOpen 포함)
+ */
+export const fetchMyEnrollmentPeriod = async () => {
+  const response = await axiosInstance.get("/api/enrollments/periods/me");
   return response.data;
 };

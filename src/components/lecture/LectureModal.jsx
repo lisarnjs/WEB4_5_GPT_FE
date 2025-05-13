@@ -39,7 +39,7 @@ export default function LectureModal({
 }) {
   const [form, setForm] = useState(formInitData);
   const profile = JSON.parse(sessionStorage.getItem("profile"));
-  const { university: university, employeeId, major: major } = profile;
+  const { university, employeeId, major } = profile;
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -90,6 +90,7 @@ export default function LectureModal({
     let scheduleArr = [];
     if (form.time) {
       const [startTime, endTime] = form.time.split("~").map((s) => s.trim());
+
       scheduleArr = [
         {
           day: weekdayMap[form.day],
@@ -115,8 +116,8 @@ export default function LectureModal({
         : "",
       schedule: scheduleArr, // 1;30 -> 01:30 으로 수정하기
     };
-
-    onSubmit(apiData);
+    console.log(apiData);
+    onSubmit({ ...apiData, id: initialData.id });
     setForm(formInitData);
     onClose();
   };

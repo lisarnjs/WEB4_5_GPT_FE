@@ -6,17 +6,21 @@ import {
   cancelEnrollment,
   enrollCourse,
   fetchLectures,
+  fetchMyEnrollmentPeriod,
   fetchMyEnrollments,
 } from "../apis/lecture";
 import { majorListByUniversity } from "../apis/university";
 import RegisterCourseTable from "../components/registerCourses/RegisterCourseTable";
 import MyRegisteredCourseTable from "../components/registerCourses/MyRegisterCourseTable";
 import DeleteConfirmModal from "../components/common/DeleteCofirmModal";
+import { useNavigate } from "react-router-dom";
+import { HOME_PATH } from "../constants/route.constants";
 
 const itemsPerPage = 5;
 
 export default function RegisterCourses() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const member = JSON.parse(sessionStorage.getItem("member"));
   const profile = JSON.parse(sessionStorage.getItem("profile"));
@@ -51,6 +55,25 @@ export default function RegisterCourses() {
     setSearchParams(defaultFilters);
     setCurrentPage(1);
   };
+
+  // 🔸 수강신청 기간 확인
+  useQuery({
+    queryKey: ["enrollmentPeriod"],
+    queryFn: fetchMyEnrollmentPeriod,
+    onSuccess: (data) => {
+      if (!data.data.isEnrollmentOpen) {
+        alert(data.message || "수강신청 기간이 아닙니다");
+        navigate(HOME_PATH);
+      }
+    },
+    onError: (error) => {
+      const message =
+        error.response?.data?.message || "수강신청 권한이 없습니다";
+      alert(message);
+      navigate(HOME_PATH);
+    },
+    retry: false,
+  });
 
   // 🔸 전공 목록
   const { data: majors = [] } = useQuery({

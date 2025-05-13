@@ -19,6 +19,10 @@ import {
 import MemberLoginLayout from "../components/layout/MemberLoginLayout";
 import StudentMyPage from "../pages/MyPage/Student";
 import ProfessorMypage from "../pages/MyPage/Professor";
+import ManageUser from "../pages/Admin/ManageUser";
+import AdminLayout from "../components/layout/AdminLayout";
+import ProfessorRegistration from "../pages/Admin/ProfessorRegistration";
+import AdminMypage from "../pages/MyPage/Admin";
 
 const router = createBrowserRouter([
   {
@@ -54,9 +58,24 @@ const router = createBrowserRouter([
         children: [
           { path: "student", element: <StudentMyPage /> },
           { path: "professor", element: <ProfessorMypage /> },
+          { path: "admin", element: <AdminMypage /> },
         ],
       },
       { path: "register-courses", element: <RegisterCourses /> },
+      {
+        path: "admin",
+        element: <AdminLayout />,
+        children: [
+          {
+            path: "manage-user",
+            element: <ManageUser />,
+          },
+          {
+            path: "professor-registration",
+            element: <ProfessorRegistration />,
+          },
+        ],
+      },
     ],
   },
 ]);

@@ -140,6 +140,7 @@ export default function LectureList() {
           lectures={lectures}
           isStaff={isStaff}
           onEdit={(lecture) => {
+            console.log(lecture);
             setModalMode("edit");
             setEditData(lecture);
             setModalOpen(true);
