@@ -67,6 +67,12 @@ export default function StudentSignup({
   const handleRequestCode = async (e) => {
     e.preventDefault();
     if (!formData.email) return alert("이메일을 입력해주세요.");
+
+    // 이메일 도메인 유효성 검사
+    if (!formData.email.toLowerCase().endsWith("@auni.ac.kr")) {
+      return alert("올바른 학교 이메일 주소(@auni.ac.kr)를 입력해주세요.");
+    }
+
     setIsSendingCode(true);
     try {
       await requestEmailCode(formData.email, "SIGNUP");
@@ -188,7 +194,7 @@ export default function StudentSignup({
             name="email"
             value={formData.email || ""}
             onChange={handleInput}
-            placeholder="이메일 주소"
+            placeholder="example@auni.ac.kr" // placeholder 변경
             className="flex-1 border px-3 py-2 rounded-md"
             disabled={isEmailVerified}
             required
