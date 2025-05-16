@@ -3,9 +3,10 @@ import PasswordCheck from "../../components/mypage/PasswordCheck";
 import EmailChangeForm from "../../components/mypage/EmailChangeForm";
 import PasswordChangeForm from "../../components/mypage/PasswordChangeForm";
 import MypageSidebar from "../../components/mypage/MyPageSidebar";
+import AdminInfo from "../../components/mypage/AdminInfo";
 
 export default function AdminMypage() {
-  const [selectedMenu, setSelectedMenu] = useState("email");
+  const [selectedMenu, setSelectedMenu] = useState("info");
   const [verified, setVerified] = useState(false);
 
   // 비밀번호 검증이 필요한 메뉴 목록
@@ -23,6 +24,8 @@ export default function AdminMypage() {
       );
     }
     switch (selectedMenu) {
+      case "info":
+        return <AdminInfo />;
       case "email":
         return <EmailChangeForm userType="admin" />;
       case "password":

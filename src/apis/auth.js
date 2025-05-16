@@ -110,6 +110,17 @@ export const getProfessorMyData = async () => {
   }
 };
 
+// 관리자 내 정보 조회
+export const getAdminMyData = async () => {
+  try {
+    const res = await axiosInstance.get("/api/members/me/admin");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching student data:", error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+};
+
 // 비밀번호 확인 API
 export const verifyPassword = async (password) => {
   const response = await axiosInstance.post("/api/members/me/verify-password", {

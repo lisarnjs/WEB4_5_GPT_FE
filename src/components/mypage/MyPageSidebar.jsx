@@ -21,6 +21,7 @@ export default function MypageSidebar({ selected, onSelect }) {
       { key: "withdraw", label: "회원 탈퇴" },
     ],
     ADMIN: [
+      { key: "info", label: "내 정보" },
       { key: "email", label: "이메일 변경" },
       { key: "password", label: "비밀번호 변경" },
       { key: "withdraw", label: "회원 탈퇴" },

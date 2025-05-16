@@ -20,3 +20,8 @@ export const REGISTER_COURSES_PATH = "/member/register-courses";
 export const ADMIN_MANAGE_USER_PATH = "/member/admin/manage-user";
 export const ADMIN_PROFESSOR_REGISTRATION_PATH =
   "/member/admin/professor-registration";
+export const ADMIN_MANAGE_PERIOD_PATH = "/member/admin/manage-period";
+export const ADMIN_INVITE_PATH = "/member/admin/invite";
+export const ADMIN_MANAGE_MAJOR_PATH = "/member/admin/manage-major";
+export const ADMIN_MANAGE_UNIVERSITIES_PATH =
+  "/member/admin/manage-universities";

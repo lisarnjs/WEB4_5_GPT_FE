@@ -23,6 +23,10 @@ import ManageUser from "../pages/Admin/ManageUser";
 import AdminLayout from "../components/layout/AdminLayout";
 import ProfessorRegistration from "../pages/Admin/ProfessorRegistration";
 import AdminMypage from "../pages/MyPage/Admin";
+import ManageRegistrationPeriod from "../pages/Admin/ManageRegistrationPeriod";
+import InviteAdmin from "../pages/Admin/InviteAdmin";
+import ManageMajors from "../pages/Admin/ManageMajors";
+import ManageUniversities from "../pages/Admin/ManageUniversities";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +77,22 @@ const router = createBrowserRouter([
           {
             path: "professor-registration",
             element: <ProfessorRegistration />,
+          },
+          {
+            path: "manage-period",
+            element: <ManageRegistrationPeriod />,
+          },
+          {
+            path: "invite",
+            element: <InviteAdmin />,
+          },
+          {
+            path: "manage-major",
+            element: <ManageMajors />,
+          },
+          {
+            path: "manage-universities",
+            element: <ManageUniversities />,
           },
         ],
       },
