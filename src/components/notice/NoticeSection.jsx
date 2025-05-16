@@ -1,24 +1,32 @@
-// components/home/NoticeSection.jsx
 import { useEffect, useState } from "react";
 import { getNotices } from "../../apis/notice";
-import NoticeModal from "./NoticeModal";
 import BaseButton from "../common/BaseButton";
-import Pagination from "../common/BaseButton";
+import Pagination from "../common/Pagination";
+import useDebounce from "../../hooks/useDebounce";
+import NoticeDetailModal from "./NoticeDetailModal";
+import NoticeModal from "./NoticeModal";
 
 export default function NoticeSection({ isAdmin }) {
   const [notices, setNotices] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
+  const debouncedSearchTitle = useDebounce(searchTitle, 500);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+
   const [showModal, setShowModal] = useState(false);
+  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
 
   const itemsPerPage = 5;
 
-  const fetchNoticeList = async () => {
+  const fetchNoticeList = async (
+    page = currentPage,
+    keyword = debouncedSearchTitle
+  ) => {
     try {
       const res = await getNotices({
-        // title: searchTitle,
-        page: currentPage - 1,
+        title: keyword,
+        page: page - 1,
         size: itemsPerPage,
       });
       setNotices(res.data.content);
@@ -29,17 +37,25 @@ export default function NoticeSection({ isAdmin }) {
   };
 
   useEffect(() => {
-    fetchNoticeList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTitle, currentPage]);
+    setCurrentPage(1); // 검색어 변경 시 1페이지로
+    fetchNoticeList(1, debouncedSearchTitle);
+  }, [debouncedSearchTitle]);
+
+  useEffect(() => {
+    fetchNoticeList(currentPage, debouncedSearchTitle);
+  }, [currentPage]);
+
+  const handleClickNotice = (id) => {
+    setSelectedNoticeId(id);
+  };
 
   return (
     <section className="mb-6 rounded-xl bg-white p-6 shadow">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-base font-semibold">📌 공지사항</h2>
+        <h2 className="text-base font-semibold w-full">📌 공지사항</h2>
         {isAdmin && (
           <BaseButton onClick={() => setShowModal(true)}>
-            +게시물 등록
+            공지사항 등록
           </BaseButton>
         )}
       </div>
@@ -58,18 +74,17 @@ export default function NoticeSection({ isAdmin }) {
         <span>번호</span>
         <span className="col-span-2">제목</span>
         <span>등록일</span>
-        <span>수정일</span>
       </div>
 
       {notices.map((notice, index) => (
         <div
           key={notice.id}
-          className="grid grid-cols-5 text-sm text-gray-700 py-2 border-b"
+          className="grid grid-cols-5 text-sm text-gray-700 py-2 border-b cursor-pointer hover:bg-gray-50"
+          onClick={() => handleClickNotice(notice.id)}
         >
           <span>{(currentPage - 1) * itemsPerPage + index + 1}</span>
           <span className="col-span-2 truncate">{notice.title}</span>
           <span>{new Date(notice.createdAt).toLocaleDateString()}</span>
-          <span>{new Date(notice.modifiedAt).toLocaleDateString()}</span>
         </div>
       ))}
 
@@ -83,8 +98,16 @@ export default function NoticeSection({ isAdmin }) {
       <NoticeModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        onCreated={fetchNoticeList}
+        onSuccess={() => fetchNoticeList(1)}
       />
+
+      {selectedNoticeId && (
+        <NoticeDetailModal
+          noticeId={selectedNoticeId}
+          onClose={() => setSelectedNoticeId(null)}
+          onUpdate={() => fetchNoticeList(currentPage, debouncedSearchTitle)}
+        />
+      )}
     </section>
   );
 }

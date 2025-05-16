@@ -13,6 +13,8 @@ export default function Home() {
     PROFESSOR: getProfessorMyData,
   };
 
+  const role = localStorage.getItem("role");
+
   useEffect(() => {
     let ignore = false;
     const role = localStorage.getItem("role");
@@ -70,7 +72,7 @@ export default function Home() {
       {/* <section className="mb-6 rounded-xl bg-white p-6 shadow">
 
       </section> */}
-      <NoticeSection />
+      <NoticeSection isAdmin={role === "ADMIN"} />
     </div>
   );
 }

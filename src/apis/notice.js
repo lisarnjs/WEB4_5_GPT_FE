@@ -38,17 +38,30 @@ export const getNoticeDetail = async (id) => {
  * @param {File} [file] - 첨부 이미지 파일 (선택)
  * @returns {Promise}
  */
-export const createNotice = async (data, file) => {
-  try {
-    const formData = new FormData();
-    formData.append(
-      "data",
-      new Blob([JSON.stringify(data)], { type: "application/json" })
-    );
-    if (file) {
-      formData.append("file", file);
-    }
+// export const createNotice = async (data, file) => {
+//   try {
+//     const formData = new FormData();
+//     formData.append(
+//       "data",
+//       new Blob([JSON.stringify(data)], { type: "application/json" })
+//     );
+//     if (file) {
+//       formData.append("file", file);
+//     }
 
+//     const res = await axiosInstance.post("/api/notices", formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+//     return res.data;
+//   } catch (error) {
+//     console.error("공지사항 작성 실패:", error);
+//     throw error;
+//   }
+// };
+export const createNotice = async (formData) => {
+  try {
     const res = await axiosInstance.post("/api/notices", formData, {
       headers: {
         "Content-Type": "multipart/form-data",

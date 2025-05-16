@@ -32,7 +32,14 @@ export default function NoticeModal({ isOpen, onClose, onSuccess }) {
       setIsSubmitting(true);
       await createNotice(formData);
       alert("공지사항이 등록되었습니다.");
-      onSuccess();
+
+      // 에러가 발생해도 Modal 오류로 보이지 않도록 분리
+      try {
+        onSuccess(); // fetchNoticeList 호출
+      } catch (fetchErr) {
+        console.warn("공지사항 목록 새로고침 실패:", fetchErr);
+      }
+
       onClose();
     } catch (err) {
       const msg = err.response?.data?.message || "공지사항 등록 실패";
