@@ -31,28 +31,72 @@ export const fetchLectures = async ({
 };
 
 /**
- * 강의 생성 API
- * POST /api/courses
- * @param {Object} courseData - 강의 생성 데이터
- * @returns {Promise<Object>} 생성된 강의 데이터
+ * 강의 단건 조회
+ * @param {number|string} courseId - 조회할 강의 ID
+ * @returns {Promise<Object>} - 단일 강의 상세 정보
  */
-export const createLecture = async (courseData) => {
-  const response = await axiosInstance.post("/api/courses", courseData);
-  return response.data;
+export const getLectureById = async (courseId) => {
+  try {
+    const response = await axiosInstance.get(`/api/courses/${courseId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error(`강의(${courseId}) 단건 조회 실패:`, error);
+    throw error;
+  }
 };
 
 /**
- * 강의 수정 API
- * PUT /api/courses/{courseId}
- * @param {Object} courseData - 수정할 강의 데이터 (courseId 포함)
- * @returns {Promise<Object>} 수정된 강의 데이터
+ * 강의 생성 API (multipart/form-data)
+ * POST /api/courses
+ * @param {Object} courseData - 강의 정보 + 파일
+ *   - data: 강의 JSON
+ *   - file: 파일 객체 (선택)
+ * @returns {Promise<Object>} 생성된 강의 데이터
  */
-export const updateLecture = async (courseData) => {
-  console.log(courseData);
-  const response = await axiosInstance.put(
-    `/api/courses/${courseData.id}`,
-    courseData
+export const createLecture = async ({ data, file }) => {
+  const formData = new FormData();
+
+  // JSON 데이터를 Blob으로 감싸 formData에 추가
+  const jsonBlob = new Blob([JSON.stringify(data)], {
+    type: "application/json",
+  });
+  formData.append("data", jsonBlob);
+
+  // 파일이 존재할 경우에만 추가
+  if (file) {
+    formData.append("file", file);
+  }
+
+  const response = await axiosInstance.post("/api/courses", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+};
+
+// 강의 수정 API (multipart/form-data)
+export const updateLecture = async ({ id, data, file }) => {
+  const formData = new FormData();
+
+  // "data" 파트 추가
+  formData.append(
+    "data",
+    new Blob([JSON.stringify(data)], { type: "application/json" })
   );
+
+  // "file" 파트 (선택)
+  if (file) {
+    formData.append("file", file);
+  }
+
+  const response = await axiosInstance.put(`/api/courses/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return response.data;
 };
 

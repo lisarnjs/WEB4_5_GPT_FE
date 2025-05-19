@@ -8,6 +8,7 @@ import {
   LOGIN_PATH,
   MY_PAGE_PATH,
   REGISTER_COURSES_PATH,
+  TIME_TABLE_PATH,
 } from "../../constants/route.constants";
 import useAuthStore from "../../store/authStore";
 
@@ -36,12 +37,17 @@ export default function Header() {
       </h2>
       <div className="space-x-4">
         {myPageRole === "student" && (
-          <Link
-            to={REGISTER_COURSES_PATH}
-            className="text-md  hover:text-gray-700"
-          >
-            수강신청
-          </Link>
+          <>
+            <Link to={TIME_TABLE_PATH} className="text-md  hover:text-gray-700">
+              시간표
+            </Link>
+            <Link
+              to={REGISTER_COURSES_PATH}
+              className="text-md  hover:text-gray-700"
+            >
+              수강신청
+            </Link>
+          </>
         )}
         {myPageRole !== "admin" && (
           <Link to={LECUTRE_PATH} className="text-md  hover:text-gray-700">

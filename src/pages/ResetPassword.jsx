@@ -34,7 +34,7 @@ export default function ResetPassword() {
     }
     try {
       setLoading(true);
-      await requestEmailCode(form.email);
+      await requestEmailCode(form.email, "PASSWORD_RESET");
       setCodeRequested(true);
       setMessage({ type: "success", text: "인증 코드가 전송되었습니다." });
     } catch (err) {
@@ -55,7 +55,7 @@ export default function ResetPassword() {
     }
     try {
       setLoading(true);
-      await verifyEmailCode(form.email, form.code);
+      await verifyEmailCode(form.email, form.code, "PASSWORD_RESET");
       setCodeVerified(true);
       setMessage({ type: "success", text: "인증이 완료되었습니다." });
     } catch (err) {

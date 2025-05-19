@@ -10,6 +10,9 @@ export const MY_PAGE_PATH = "/member/my-page/";
 // 메인 페이지
 export const HOME_PATH = "/member/home";
 
+// 시간표
+export const TIME_TABLE_PATH = "/member/time-table";
+
 // 강의 목록
 export const LECUTRE_PATH = "/member/lecture";
 

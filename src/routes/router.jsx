@@ -27,6 +27,7 @@ import ManageRegistrationPeriod from "../pages/Admin/ManageRegistrationPeriod";
 import InviteAdmin from "../pages/Admin/InviteAdmin";
 import ManageMajors from "../pages/Admin/ManageMajors";
 import ManageUniversities from "../pages/Admin/ManageUniversities";
+import TimeTablePage from "../pages/TimeTable";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <MainPage />,
+      },
+      {
+        path: "time-table",
+        element: <TimeTablePage />,
       },
       {
         path: "lecture",

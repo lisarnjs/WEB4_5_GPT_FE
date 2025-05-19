@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { getNoticeDetail, updateNotice, deleteNotice } from "../../apis/notice";
 
-export default function NoticeDetailModal({ noticeId, onClose, onUpdate }) {
+export default function NoticeDetailModal({
+  isAdmin,
+  noticeId,
+  onClose,
+  onUpdate,
+}) {
   const [notice, setNotice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -96,7 +101,10 @@ export default function NoticeDetailModal({ noticeId, onClose, onUpdate }) {
                   }}
                   className="w-full"
                 />
-                <div className="flex justify-end pt-2">
+                <p className="text-sm text-gray-400 mt-4 font-semibold">
+                  이미지는 최대 1MB 까지 가능합니다.
+                </p>
+                <div className="flex justify-end pt-2 gap-2">
                   <button
                     onClick={() => setIsEditing(false)}
                     className="px-4 py-2 border rounded hover:bg-gray-100"
@@ -130,18 +138,22 @@ export default function NoticeDetailModal({ noticeId, onClose, onUpdate }) {
                   </div>
                 )}
                 <div className="flex justify-end  mt-4 gap-2">
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 border rounded hover:bg-gray-100"
-                  >
-                    수정
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    className="px-4 py-2 border rounded text-red-500 hover:bg-red-50"
-                  >
-                    삭제
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="px-4 py-2 border rounded hover:bg-gray-100"
+                    >
+                      수정
+                    </button>
+                  )}
+                  {isAdmin && (
+                    <button
+                      onClick={handleDelete}
+                      className="px-4 py-2 border rounded text-red-500 hover:bg-red-50"
+                    >
+                      삭제
+                    </button>
+                  )}
                   <button
                     onClick={onClose}
                     className="px-4 py-2 border rounded hover:bg-gray-100"

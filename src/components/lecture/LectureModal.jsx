@@ -38,12 +38,13 @@ export default function LectureModal({
   initialData = {},
 }) {
   const [form, setForm] = useState(formInitData);
+  const [file, setFile] = useState(null);
+
   const profile = JSON.parse(sessionStorage.getItem("profile"));
   const { university, employeeId, major } = profile;
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      // API 응답 데이터를 폼 구조에 맞게 변환
       const firstSchedule = initialData.schedule?.[0] || {};
       setForm({
         title: initialData.title || "",
@@ -66,12 +67,14 @@ export default function LectureModal({
             ? `${firstSchedule.startTime}~${firstSchedule.endTime}`
             : "",
       });
+      setFile(null); // 편집 모드에서는 초기화
     } else {
       setForm({
         ...formInitData,
         university,
         major,
       });
+      setFile(null);
     }
   }, [mode, initialData, university, major]);
 
@@ -83,14 +86,17 @@ export default function LectureModal({
     }));
   };
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) setFile(selectedFile);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 시간 파싱
     let scheduleArr = [];
     if (form.time) {
       const [startTime, endTime] = form.time.split("~").map((s) => s.trim());
-
       scheduleArr = [
         {
           day: weekdayMap[form.day],
@@ -100,8 +106,7 @@ export default function LectureModal({
       ];
     }
 
-    // API 요청 데이터 생성
-    const apiData = {
+    const data = {
       title: form.title,
       major: form.major,
       university: form.university,
@@ -111,14 +116,25 @@ export default function LectureModal({
       employeeId: form.employeeId,
       grade: Number(form.grade),
       semester: Number(form.semester),
-      coursePlanAttachment: form.plan
-        ? form.coursePlanAttachment || "someUri/somePath/someFile.jpg"
-        : "",
-      schedule: scheduleArr, // 1;30 -> 01:30 으로 수정하기
+      schedule: scheduleArr,
     };
-    console.log(apiData);
-    onSubmit({ ...apiData, id: initialData.id });
+    console.log(initialData);
+    console.log(data);
+    const payload =
+      mode === "create"
+        ? {
+            data,
+            file: form.plan ? file : null,
+          }
+        : {
+            id: initialData.id,
+            data,
+            file: form.plan ? file : initialData.coursePlanAttachment ?? null,
+          };
+
+    onSubmit(payload);
     setForm(formInitData);
+    setFile(null);
     onClose();
   };
 
@@ -214,19 +230,73 @@ export default function LectureModal({
                 className="w-full border px-3 py-2 rounded"
               />
             </div>
+            {/* 첨부 체크 */}
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 name="plan"
                 checked={form.plan}
                 onChange={handleChange}
-                className="ml-2"
               />
               <label className="block text-sm text-textSub mb-1">
                 강의계획서 첨부
               </label>
             </div>
           </div>
+
+          {/* {form.plan && (
+            <div>
+              <label className="block text-sm text-textSub mb-1">
+                첨부파일
+              </label>
+              <input
+                type="file"
+                accept="image/*,.pdf"
+                onChange={handleFileChange}
+                className="w-full border px-3 py-2 rounded"
+              />
+              {file && (
+                <p className="text-sm text-green-600 mt-1">
+                  선택됨: {file.name}
+                </p>
+              )}
+            </div>
+          )} */}
+          {form.plan && (
+            <div>
+              <label className="block text-sm text-textSub mb-1">
+                첨부파일
+              </label>
+              <input
+                type="file"
+                accept="image/*,.pdf"
+                onChange={handleFileChange}
+                className="w-full border px-3 py-2 rounded"
+              />
+
+              {/* ✅ 새 파일이 없고 기존 첨부파일 URL이 있는 경우 */}
+              {!file && form.coursePlanAttachment && (
+                <p className="text-sm text-blue-600 mt-1">
+                  기존 파일:{" "}
+                  <a
+                    href={form.coursePlanAttachment}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    첨부파일 보기
+                  </a>
+                </p>
+              )}
+
+              {/* ✅ 새 파일이 선택된 경우 */}
+              {file && (
+                <p className="text-sm text-green-600 mt-1">
+                  선택됨: {file.name}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>

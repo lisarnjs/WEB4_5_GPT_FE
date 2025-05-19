@@ -103,6 +103,7 @@ export default function NoticeSection({ isAdmin }) {
 
       {selectedNoticeId && (
         <NoticeDetailModal
+          isAdmin={isAdmin}
           noticeId={selectedNoticeId}
           onClose={() => setSelectedNoticeId(null)}
           onUpdate={() => fetchNoticeList(currentPage, debouncedSearchTitle)}

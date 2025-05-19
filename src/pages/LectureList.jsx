@@ -10,6 +10,7 @@ import {
   deleteLecture,
   createLecture,
   updateLecture,
+  getLectureById,
 } from "../apis/lecture";
 import { majorListByUniversity } from "../apis/university";
 
@@ -139,11 +140,16 @@ export default function LectureList() {
         <LectureTable
           lectures={lectures}
           isStaff={isStaff}
-          onEdit={(lecture) => {
-            console.log(lecture);
-            setModalMode("edit");
-            setEditData(lecture);
-            setModalOpen(true);
+          onEdit={async (lecture) => {
+            try {
+              const response = await getLectureById(lecture.id);
+              setEditData(response); // ✅ 응답 데이터의 body 사용
+              setModalMode("edit");
+              setModalOpen(true);
+            } catch (err) {
+              console.error("강의 상세 조회 실패:", err);
+              alert("강의 정보를 불러오지 못했습니다.");
+            }
           }}
           onDelete={setDeleteTarget}
         />
