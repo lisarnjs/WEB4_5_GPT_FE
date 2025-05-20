@@ -79,7 +79,7 @@ export const verifyEmailCode = async (email, emailCode, purpose = "SIGNUP") => {
 
 // 비밀번호 재설정
 export const resetPassword = (email, password) =>
-  axiosInstance.post("/members/password-reset/confirm", {
+  axiosInstance.post("/api/members/password-reset/confirm", {
     email,
     passWord: password,
   });
