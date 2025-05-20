@@ -41,7 +41,12 @@ export default function TimeTablePage() {
         timetableId: timetable.timetableId,
         visibility: "PUBLIC",
       });
-      setShareUrl(res.shareUrl);
+
+      const origin = window.location.origin;
+      const url = res.shareUrl;
+      const pathname = new URL(url).pathname;
+      const fullUrl = `${origin}${pathname}`;
+      setShareUrl(fullUrl);
       setShowShareModal(true);
     } catch (err) {
       alert("공유 링크 생성에 실패했습니다.", err);

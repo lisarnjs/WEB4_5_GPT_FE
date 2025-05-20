@@ -121,3 +121,26 @@ export const registerCourseToTimetable = async ({
     throw error;
   }
 };
+
+/**
+ * 공유된 시간표 조회 API
+ * GET /api/timetables/share/{shareKey}
+ *
+ * @param {string} shareKey - 공유 URL에 포함된 키
+ * @returns {Promise<Object>} 공유된 시간표 데이터
+ */
+export const getSharedTimetable = async (shareKey) => {
+  if (!shareKey) {
+    throw new Error("shareKey는 필수입니다.");
+  }
+
+  try {
+    const response = await axiosInstance.get(
+      `/api/timetables/share/${shareKey}`
+    );
+    return response.data.data; // { timetableId, year, semester, ownerName, timetables: [...] }
+  } catch (error) {
+    console.error("공유된 시간표 조회 실패:", error);
+    throw error;
+  }
+};

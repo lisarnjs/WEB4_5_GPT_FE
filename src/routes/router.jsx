@@ -28,6 +28,7 @@ import InviteAdmin from "../pages/Admin/InviteAdmin";
 import ManageMajors from "../pages/Admin/ManageMajors";
 import ManageUniversities from "../pages/Admin/ManageUniversities";
 import TimeTablePage from "../pages/TimeTable";
+import SharedTimetablePage from "../pages/SharedTimetable";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: RESET_PW_PATH,
     element: <ResetPassword />,
+  },
+  {
+    path: "/timetable/share/:shareKey",
+    element: <SharedTimetablePage />,
   },
   {
     path: "/member",
