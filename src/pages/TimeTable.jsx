@@ -28,30 +28,49 @@ export default function TimeTablePage() {
   // 시간표 공유 - 내부 상태 추가
   const [shareUrl, setShareUrl] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
-
-  // 공유 버튼 핸들러
-  const handleShare = async () => {
-    if (!timetable?.timetableId) {
-      alert("시간표가 존재하지 않습니다.");
-      return;
-    }
-
+  const [expiresAt, setExpiresAt] = useState("");
+  const [visibility, setVisibility] = useState("PUBLIC");
+  // 공유 링크 생성 함수
+  const handleGenerateLink = async () => {
+    if (!timetable?.timetableId) return;
     try {
       const res = await createTimetableShareLink({
         timetableId: timetable.timetableId,
-        visibility: "PUBLIC",
+        visibility,
       });
-
-      const origin = window.location.origin;
-      const url = res.shareUrl;
-      const pathname = new URL(url).pathname;
-      const fullUrl = `${origin}${pathname}`;
-      setShareUrl(fullUrl);
-      setShowShareModal(true);
+      const pathname = new URL(res.shareUrl).pathname;
+      setShareUrl(`${window.location.origin}${pathname}`);
+      setExpiresAt(res.expiresAt);
     } catch (err) {
-      alert("공유 링크 생성에 실패했습니다.", err);
+      alert("공유 링크 생성에 실패했습니다.");
+      console.error(err);
     }
   };
+
+  // 공유 버튼 핸들러
+  // const handleShare = async () => {
+  //   if (!timetable?.timetableId) {
+  //     alert("시간표가 존재하지 않습니다.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await createTimetableShareLink({
+  //       timetableId: timetable.timetableId,
+  //       visibility,
+  //     });
+
+  //     const origin = window.location.origin;
+  //     const url = res.shareUrl;
+  //     const pathname = new URL(url).pathname;
+  //     const fullUrl = `${origin}${pathname}`;
+  //     setShareUrl(fullUrl);
+  //     setExpiresAt(res.expiresAt);
+  //     setShowShareModal(true);
+  //   } catch (err) {
+  //     alert("공유 링크 생성에 실패했습니다.", err);
+  //   }
+  // };
 
   const fetchTimetable = async () => {
     setLoading(true);
@@ -185,7 +204,9 @@ export default function TimeTablePage() {
           </BaseButton>
         )}
         {/* 추가 기능 버튼 */}
-        <BaseButton onClick={handleShare}>시간표 공유</BaseButton>
+        <BaseButton onClick={() => setShowShareModal(true)}>
+          시간표 공유
+        </BaseButton>
         <BaseButton onClick={() => setShowAddModal(true)}>
           시간표 등록 - 직접입력
         </BaseButton>
@@ -229,8 +250,16 @@ export default function TimeTablePage() {
 
       <ShareLinkModal
         isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
+        onClose={() => {
+          setShowShareModal(false);
+          setShareUrl("");
+          setExpiresAt("");
+        }}
         shareUrl={shareUrl}
+        expiresAt={expiresAt}
+        visibility={visibility}
+        onVisibilityChange={setVisibility}
+        onGenerateLink={handleGenerateLink}
       />
     </div>
   );

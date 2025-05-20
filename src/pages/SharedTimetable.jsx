@@ -1,8 +1,9 @@
 // src/pages/SharedTimetablePage.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { dayToEngList } from "../constants/date.constants";
 import { getSharedTimetable } from "../apis/timeTable";
+import { LOGIN_PATH } from "../constants/route.constants";
 
 const days = ["월", "화", "수", "목", "금", "토", "일"];
 const hours = Array.from({ length: 12 }, (_, i) => 9 + i); // 9~20시
@@ -12,6 +13,7 @@ export default function SharedTimetablePage() {
   const [timetable, setTimetable] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchShared = async () => {
@@ -21,6 +23,8 @@ export default function SharedTimetablePage() {
       } catch (err) {
         setError(`시간표를 불러오지 못했습니다.`);
         console.error(err);
+        alert(err?.response?.data?.message);
+        navigate(LOGIN_PATH);
       } finally {
         setLoading(false);
       }
