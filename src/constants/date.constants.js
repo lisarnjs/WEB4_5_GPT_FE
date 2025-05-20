@@ -7,3 +7,13 @@ export const dayToKorList = {
   SAT: "토",
   SUN: "일",
 };
+
+export const dayToEngList = {
+  월: "MON",
+  화: "TUE",
+  수: "WED",
+  목: "THU",
+  금: "FRI",
+  토: "SAT",
+  일: "SUN",
+};

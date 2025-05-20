@@ -51,8 +51,9 @@ export const createUniversity = (data) => {
 
 // 대학 정보 수정
 export const updateUniversity = (data) => {
-  return axiosInstance.put("/api/admin/universities", {
+  return axiosInstance.put(`/api/admin/universities/${data.id}`, {
     name: data.name,
+    emailDomain: data.emailDomain,
   });
 };
 

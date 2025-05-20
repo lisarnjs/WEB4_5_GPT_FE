@@ -17,7 +17,7 @@ export default function WithdrawForm() {
       // ✅ 로컬스토리지 정리 및 리다이렉트
       localStorage.removeItem("accessToken");
       localStorage.removeItem("role");
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       const msg =
         error?.response?.data?.message || "회원 탈퇴 중 오류가 발생했습니다.";

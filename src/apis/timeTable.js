@@ -46,3 +46,78 @@ export const createMyTimetable = async ({ year, semester }) => {
     throw error;
   }
 };
+
+// 시간표 수업 직접 등록
+export const addNormalSchedule = async (payload) => {
+  const response = await axiosInstance.post("/api/timetables/normal", payload);
+  return response.data;
+};
+
+/**
+ * 시간표 공유 링크 생성 API
+ * POST /api/timetable/share/link
+ *
+ * @param {Object} params
+ * @param {number} params.timetableId - 공유할 시간표 ID
+ * @param {string} params.visibility - 공개 범위 ("PUBLIC" 또는 "PRIVATE")
+ * @returns {Promise<Object>} 공유 링크 응답 데이터 (shareUrl, expiresAt 포함)
+ */
+export const createTimetableShareLink = async ({ timetableId, visibility }) => {
+  if (!timetableId || !visibility) {
+    throw new Error("timetableId와 visibility는 필수입니다.");
+  }
+
+  try {
+    const response = await axiosInstance.post(
+      "/api/timetables/share/link",
+      { timetableId, visibility },
+      {
+        headers: {
+          // 현재 도메인을 자동으로 헤더에 포함
+          "X-Client-Base-Url": import.meta.env.VITE_API_BASE_URL,
+        },
+      }
+    );
+
+    return response.data.data; // { shareUrl, expiresAt }
+  } catch (error) {
+    console.error("공유 링크 생성 실패:", error);
+    throw error;
+  }
+};
+
+/**
+ * 시간표에 강의 등록 API
+ * POST /api/timetables/course
+ *
+ * @param {Object} params
+ * @param {number} params.timetableId - 내 시간표 ID
+ * @param {number} params.courseId - 추가할 강의 ID
+ * @param {string} params.color - 표시 색상 (ex: "#ff0000")
+ * @param {string} [params.memo] - 선택 메모
+ * @returns {Promise<Object>} 응답 메시지
+ */
+export const registerCourseToTimetable = async ({
+  timetableId,
+  courseId,
+  color,
+  memo = "",
+}) => {
+  if (!timetableId || !courseId || !color) {
+    throw new Error("timetableId, courseId, color는 필수입니다.");
+  }
+
+  try {
+    const response = await axiosInstance.post("/api/timetables/course", {
+      timetableId,
+      courseId,
+      color,
+      memo,
+    });
+
+    return response.data; // { code, message }
+  } catch (error) {
+    console.error("강의 시간표 등록 실패:", error);
+    throw error;
+  }
+};
