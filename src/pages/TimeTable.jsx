@@ -4,10 +4,13 @@ import {
   createMyTimetable,
   createTimetableShareLink,
   getMyTimetable,
+  registerCoursesToTimetableBulk,
 } from "../apis/timeTable";
 import AddScheduleModal from "../components/timetable/AddScheduleModal";
 import { dayToEngList } from "../constants/date.constants";
 import ShareLinkModal from "../components/timetable/ShareLinkModal";
+import ImportCourseModal from "../components/timetable/ImportCourseModal";
+import { fetchMyEnrollments } from "../apis/lecture";
 
 const now = new Date();
 const currentYear = now.getFullYear();
@@ -22,6 +25,8 @@ export default function TimeTablePage() {
   const [timetable, setTimetable] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -97,6 +102,38 @@ export default function TimeTablePage() {
       await fetchTimetable();
     } catch (err) {
       alert("시간표 생성 실패", err);
+    }
+  };
+
+  const handleImportAllCoursesToTimetable = async () => {
+    if (!timetable?.timetableId) {
+      alert("시간표가 먼저 생성되어야 합니다.");
+      return;
+    }
+
+    try {
+      const res = await fetchMyEnrollments();
+      const enrolledCourses = res.data;
+
+      if (!enrolledCourses || enrolledCourses.length === 0) {
+        alert("수강 중인 강의가 없습니다.");
+        return;
+      }
+
+      const courseIds = enrolledCourses.map((course) => course.courseId);
+
+      await registerCoursesToTimetableBulk({
+        timetableId: timetable.timetableId,
+        courseIds,
+        color: "BLUE", // 기본값 또는 UI로 선택받아도 됨
+        memo: "일괄 등록",
+      });
+
+      alert("전체 강의가 시간표에 반영되었습니다.");
+      fetchTimetable(); // 반영 후 다시 불러오기
+    } catch (err) {
+      console.error(err);
+      alert("시간표 반영에 실패했습니다.");
     }
   };
 
@@ -210,8 +247,12 @@ export default function TimeTablePage() {
         <BaseButton onClick={() => setShowAddModal(true)}>
           시간표 등록 - 직접입력
         </BaseButton>
-        <BaseButton disabled>시간표 등록 - 강의 불러오기</BaseButton>
-        <BaseButton disabled>내 시간표 불러오기</BaseButton>
+        <BaseButton onClick={() => setShowImportModal(true)}>
+          시간표 등록 - 강의 불러오기
+        </BaseButton>
+        <BaseButton onClick={handleImportAllCoursesToTimetable}>
+          내 시간표 불러오기
+        </BaseButton>
       </div>
 
       <div className="flex-1 overflow-auto p-4">
@@ -246,6 +287,13 @@ export default function TimeTablePage() {
         onClose={() => setShowAddModal(false)}
         timetableId={timetable?.timetableId}
         onSuccess={() => fetchTimetable()} // 성공 후 다시 조회
+      />
+
+      <ImportCourseModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        timetableId={timetable?.timetableId}
+        onSuccess={fetchTimetable}
       />
 
       <ShareLinkModal

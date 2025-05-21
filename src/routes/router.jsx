@@ -5,7 +5,7 @@ import AdminLogin from "../pages/AdminLogin";
 import ResetPassword from "../pages/ResetPassword";
 import LectureList from "../pages/LectureList";
 import MainPage from "../pages/Home";
-import RegisterCourses from "../pages/RegisterCourses";
+import RegisterCourses from "../pages/EnrollmentCourses/RegisterCourses";
 import {
   ADMIN_LOGIN_PATH,
   HOME_PATH,
@@ -29,6 +29,8 @@ import ManageMajors from "../pages/Admin/ManageMajors";
 import ManageUniversities from "../pages/Admin/ManageUniversities";
 import TimeTablePage from "../pages/TimeTable";
 import SharedTimetablePage from "../pages/SharedTimetable";
+import ProtectedRegisterCourses from "../pages/ProtectedRegisterCourses";
+import EnrollmentWaitingPage from "../pages/EnrollmentCourses/EnrollmentWaitingPage";
 
 const router = createBrowserRouter([
   {
@@ -75,7 +77,8 @@ const router = createBrowserRouter([
           { path: "admin", element: <AdminMypage /> },
         ],
       },
-      { path: "register-courses", element: <RegisterCourses /> },
+      { path: "register-courses", element: <ProtectedRegisterCourses /> },
+      { path: "waiting-room", element: <EnrollmentWaitingPage /> },
       {
         path: "admin",
         element: <AdminLayout />,

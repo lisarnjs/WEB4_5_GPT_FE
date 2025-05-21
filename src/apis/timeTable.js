@@ -144,3 +144,41 @@ export const getSharedTimetable = async (shareKey) => {
     throw error;
   }
 };
+
+// src/apis/timeTable.js
+
+/**
+ * 시간표에 여러 강의를 한꺼번에 등록하는 API
+ * POST /api/timetables/bulk
+ *
+ * @param {Object} payload
+ * @param {number} payload.timetableId - 시간표 ID
+ * @param {number[]} payload.courseIds - 등록할 수강 강의 ID 배열
+ * @param {string} payload.color - 전체 적용 색상 ("RED" | "BLUE" | "YELLOW")
+ * @param {string} [payload.memo] - (선택) 공통 메모
+ * @returns {Promise<Object>} 등록 결과 메시지
+ */
+export const registerCoursesToTimetableBulk = async ({
+  timetableId,
+  courseIds,
+  color,
+  memo,
+}) => {
+  if (!timetableId || !courseIds || !color) {
+    throw new Error("timetableId, courseIds, color는 필수입니다.");
+  }
+
+  try {
+    const response = await axiosInstance.post("/api/timetables/bulk", {
+      timetableId,
+      courseIds,
+      color,
+      memo,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("시간표 일괄 등록 실패:", error);
+    throw error;
+  }
+};

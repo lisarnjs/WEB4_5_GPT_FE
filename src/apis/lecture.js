@@ -154,3 +154,60 @@ export const fetchMyEnrollmentPeriod = async () => {
   const response = await axiosInstance.get("/api/enrollments/periods/me");
   return response.data;
 };
+
+// 수강신청 대기열 참여 요청
+export const joinEnrollmentQueue = async () => {
+  try {
+    const response = await axiosInstance.post("/api/enrollments/queue/join");
+    return response.data.data; // { allowed, position, estimatedWaitTime, message }
+  } catch (error) {
+    console.error("대기열 참여 실패:", error);
+    throw error;
+  }
+};
+
+// 대기열 상태 조회
+export const getEnrollmentQueueStatus = async () => {
+  try {
+    const response = await axiosInstance.get("/api/enrollments/queue/status");
+    return response.data.data; // { allowed, position, estimatedWaitTime, message }
+  } catch (error) {
+    console.error("대기열 상태 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 수강신청 세션 종료
+export const releaseEnrollmentSession = async () => {
+  try {
+    const response = await axiosInstance.post("/api/enrollments/release");
+    return response.data; // { code, message }
+  } catch (error) {
+    console.error("수강신청 세션 종료 실패:", error);
+    throw error;
+  }
+};
+
+export const connectEnrollmentSSE = (onEvent) => {
+  const eventSource = new EventSource("/api/enrollments/events");
+
+  eventSource.addEventListener("INITIAL_STATUS", (e) => {
+    onEvent("INITIAL_STATUS", JSON.parse(e.data));
+  });
+
+  eventSource.addEventListener("QUEUE_STATUS", (e) => {
+    onEvent("QUEUE_STATUS", JSON.parse(e.data));
+  });
+
+  eventSource.addEventListener("HEARTBEAT", () => {
+    // Optionally log or ignore
+    console.log("💓 SSE Heartbeat received");
+  });
+
+  eventSource.onerror = (err) => {
+    console.error("SSE 연결 오류", err);
+    eventSource.close();
+  };
+
+  return eventSource; // 반환하여 이후에 close() 가능
+};

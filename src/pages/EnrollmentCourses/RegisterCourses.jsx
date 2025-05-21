@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Pagination from "../components/common/Pagination";
-import FilterSection from "../components/lecture/FilterSection";
+import Pagination from "../../components/common/Pagination";
+import FilterSection from "../../components/lecture/FilterSection";
 import {
   cancelEnrollment,
   enrollCourse,
   fetchLectures,
   fetchMyEnrollmentPeriod,
   fetchMyEnrollments,
-} from "../apis/lecture";
-import { majorListByUniversity } from "../apis/university";
-import RegisterCourseTable from "../components/registerCourses/RegisterCourseTable";
-import MyRegisteredCourseTable from "../components/registerCourses/MyRegisterCourseTable";
-import DeleteConfirmModal from "../components/common/DeleteCofirmModal";
+} from "../../apis/lecture";
+import { majorListByUniversity } from "../../apis/university";
+import RegisterCourseTable from "../../components/registerCourses/RegisterCourseTable";
+import MyRegisteredCourseTable from "../../components/registerCourses/MyRegisterCourseTable";
+import DeleteConfirmModal from "../../components/common/DeleteCofirmModal";
 import { useNavigate } from "react-router-dom";
-import { HOME_PATH } from "../constants/route.constants";
+import { HOME_PATH } from "../../constants/route.constants";
 
 const itemsPerPage = 5;
 

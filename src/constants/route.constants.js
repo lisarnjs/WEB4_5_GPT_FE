@@ -18,6 +18,7 @@ export const LECUTRE_PATH = "/member/lecture";
 
 // 수강 신청
 export const REGISTER_COURSES_PATH = "/member/register-courses";
+export const ENROLLMENT_WAITING_PATH = "/member/waiting-room";
 
 // 관리자 페이지
 export const ADMIN_MANAGE_USER_PATH = "/member/admin/manage-user";
