@@ -4,13 +4,12 @@ import {
   createMyTimetable,
   createTimetableShareLink,
   getMyTimetable,
-  registerCoursesToTimetableBulk,
 } from "../apis/timeTable";
 import AddScheduleModal from "../components/timetable/AddScheduleModal";
 import { dayToEngList } from "../constants/date.constants";
 import ShareLinkModal from "../components/timetable/ShareLinkModal";
 import ImportCourseModal from "../components/timetable/ImportCourseModal";
-import { fetchMyEnrollments } from "../apis/lecture";
+import TimetableItemModal from "../components/timetable/TimetableItemModal";
 
 const now = new Date();
 const currentYear = now.getFullYear();
@@ -25,6 +24,9 @@ export default function TimeTablePage() {
   const [timetable, setTimetable] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [showItemModal, setShowItemModal] = useState(false);
 
   const [showImportModal, setShowImportModal] = useState(false);
 
@@ -105,38 +107,6 @@ export default function TimeTablePage() {
     }
   };
 
-  const handleImportAllCoursesToTimetable = async () => {
-    if (!timetable?.timetableId) {
-      alert("시간표가 먼저 생성되어야 합니다.");
-      return;
-    }
-
-    try {
-      const res = await fetchMyEnrollments();
-      const enrolledCourses = res.data;
-
-      if (!enrolledCourses || enrolledCourses.length === 0) {
-        alert("수강 중인 강의가 없습니다.");
-        return;
-      }
-
-      const courseIds = enrolledCourses.map((course) => course.courseId);
-
-      await registerCoursesToTimetableBulk({
-        timetableId: timetable.timetableId,
-        courseIds,
-        color: "BLUE", // 기본값 또는 UI로 선택받아도 됨
-        memo: "일괄 등록",
-      });
-
-      alert("전체 강의가 시간표에 반영되었습니다.");
-      fetchTimetable(); // 반영 후 다시 불러오기
-    } catch (err) {
-      console.error(err);
-      alert("시간표 반영에 실패했습니다.");
-    }
-  };
-
   useEffect(() => {
     fetchTimetable();
   }, [year, semester]);
@@ -161,9 +131,11 @@ export default function TimeTablePage() {
       return start <= hour && hour < end;
     });
 
+    const cellCount = cells.length;
+
     return (
       <div className="relative h-20 border">
-        {cells.map((item) => {
+        {/* {cells.map((item) => {
           const startHour = Number(item.startTime.split(":")[0]);
           const endHour = Number(item.endTime.split(":")[0]);
           const duration = endHour - startHour;
@@ -171,10 +143,58 @@ export default function TimeTablePage() {
           return (
             <div
               key={item.timetableItemId + item.startTime}
+              onClick={() => {
+                setSelectedItemId(item.timetableItemId);
+                setShowItemModal(true);
+              }}
               className="absolute left-0 right-0 px-1 py-0.5 rounded text-white text-sm overflow-hidden"
               style={{
                 top: `${(startHour - hour) * 100}%`,
                 height: `${duration * 100}%`,
+                backgroundColor:
+                  item.color === "RED"
+                    ? "#EF4444"
+                    : item.color === "YELLOW"
+                    ? "#FACC15"
+                    : item.color === "BLUE"
+                    ? "#3B82F6"
+                    : item.type === "COURSE"
+                    ? "#3B82F6"
+                    : "#10B981",
+              }}
+            >
+              <div className="font-bold truncate">{item.title}</div>
+              <div className="text-xs truncate">{item.location}</div>
+              {item.memo && (
+                <div className="text-[10px] truncate">
+                  {item.memo.length > 50
+                    ? item.memo.slice(0, 50) + "..."
+                    : item.memo}
+                </div>
+              )}
+            </div>
+          );
+        })} */}
+        {cells.map((item, index) => {
+          const startHour = Number(item.startTime.split(":")[0]);
+          const endHour = Number(item.endTime.split(":")[0]);
+          const duration = endHour - startHour;
+          const width = 100 / cellCount;
+          const left = width * index;
+
+          return (
+            <div
+              key={item.timetableItemId + item.startTime}
+              onClick={() => {
+                setSelectedItemId(item.timetableItemId);
+                setShowItemModal(true);
+              }}
+              className="absolute px-1 py-0.5 rounded text-white text-sm overflow-hidden"
+              style={{
+                top: `${(startHour - hour) * 100}%`,
+                height: `${duration * 100}%`,
+                width: `${width}%`,
+                left: `${left}%`,
                 backgroundColor:
                   item.color === "RED"
                     ? "#EF4444"
@@ -248,10 +268,10 @@ export default function TimeTablePage() {
           시간표 등록 - 직접입력
         </BaseButton>
         <BaseButton onClick={() => setShowImportModal(true)}>
-          시간표 등록 - 강의 불러오기
+          시간표 등록 - 내 강의 불러오기
         </BaseButton>
-        <BaseButton onClick={handleImportAllCoursesToTimetable}>
-          내 시간표 불러오기
+        <BaseButton onClick={() => setShowImportModal(true)}>
+          시간표 등록 - 전체 강의 불러오기
         </BaseButton>
       </div>
 
@@ -309,6 +329,15 @@ export default function TimeTablePage() {
         onVisibilityChange={setVisibility}
         onGenerateLink={handleGenerateLink}
       />
+
+      {showItemModal && (
+        <TimetableItemModal
+          isOpen={showItemModal}
+          onClose={() => setShowItemModal(false)}
+          timetableItemId={selectedItemId}
+          onUpdated={fetchTimetable}
+        />
+      )}
     </div>
   );
 }

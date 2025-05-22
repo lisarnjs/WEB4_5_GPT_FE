@@ -182,3 +182,59 @@ export const registerCoursesToTimetableBulk = async ({
     throw error;
   }
 };
+
+/**
+ * 시간표 항목 단건 조회 API
+ * GET /api/timetables/{timetableItemId}
+ *
+ * @param {number} timetableItemId - 조회할 시간표 항목 ID
+ * @returns {Promise<Object>} 시간표 항목 상세 데이터
+ */
+export const getTimetableItemById = async (timetableItemId) => {
+  if (!timetableItemId) {
+    throw new Error("timetableItemId는 필수입니다.");
+  }
+
+  try {
+    const response = await axiosInstance.get(
+      `/api/timetables/${timetableItemId}`
+    );
+    return response.data.data; // 상세 데이터
+  } catch (error) {
+    console.error("시간표 항목 조회 실패:", error);
+    throw error;
+  }
+};
+
+/**
+ * 시간표 항목 수정
+ * PUT /api/timetables/{timetableItemId}
+ */
+export const updateTimetableItem = async (timetableItemId, payload) => {
+  try {
+    const response = await axiosInstance.put(
+      `/api/timetables/${timetableItemId}`,
+      payload
+    );
+    return response.data; // { code, message }
+  } catch (error) {
+    console.error("시간표 항목 수정 실패:", error);
+    throw error;
+  }
+};
+
+/**
+ * 시간표 항목 삭제
+ * DELETE /api/timetables/{timetableItemId}
+ */
+export const deleteTimetableItem = async (timetableItemId) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/api/timetables/${timetableItemId}`
+    );
+    return response.data; // { code, message }
+  } catch (error) {
+    console.error("시간표 항목 삭제 실패:", error);
+    throw error;
+  }
+};
