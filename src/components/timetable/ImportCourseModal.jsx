@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchMyEnrollments } from "../../apis/lecture";
 import { registerCourseToTimetable } from "../../apis/timeTable";
 import BaseButton from "../common/BaseButton";
-
-// const colorMap = {
-//   RED: "#EF4444",
-//   BLUE: "#3B82F6",
-//   YELLOW: "#FACC15",
-// };
+import { colorMap } from "../../constants/common.constants";
 
 export default function ImportCourseModal({
   isOpen,
@@ -40,7 +35,7 @@ export default function ImportCourseModal({
       await registerCourseToTimetable({
         timetableId,
         courseId,
-        color,
+        color: colorMap[color],
         memo,
       });
       setDoneIds((prev) => [...prev, courseId]);

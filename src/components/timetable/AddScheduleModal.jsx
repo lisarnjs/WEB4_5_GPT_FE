@@ -1,6 +1,7 @@
 import { useState } from "react";
 import BaseButton from "../common/BaseButton";
 import { addNormalSchedule } from "../../apis/timeTable";
+import { colorMap } from "../../constants/common.constants";
 
 const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const weekdayLabels = ["월", "화", "수", "목", "금", "토", "일"];
@@ -157,8 +158,10 @@ export default function AddScheduleModal({
                   type="radio"
                   name="color"
                   value={color}
-                  checked={form.color === color}
-                  onChange={(e) => setForm({ ...form, color: e.target.value })}
+                  checked={form.color === colorMap[color]}
+                  onChange={(e) =>
+                    setForm({ ...form, color: colorMap[e.target.value] })
+                  }
                 />
                 <span
                   className={`w-4 h-4 rounded-full ${color.toLowerCase()}-500`}
