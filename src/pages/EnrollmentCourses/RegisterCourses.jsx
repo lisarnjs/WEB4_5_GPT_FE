@@ -8,6 +8,7 @@ import {
   fetchLectures,
   fetchMyEnrollmentPeriod,
   fetchMyEnrollments,
+  releaseEnrollmentSession,
 } from "../../apis/lecture";
 import { majorListByUniversity } from "../../apis/university";
 import RegisterCourseTable from "../../components/registerCourses/RegisterCourseTable";
@@ -154,15 +155,44 @@ export default function RegisterCourses() {
     }
   };
 
+  const handleEndSession = async () => {
+    if (!window.confirm("정말 수강신청을 종료하시겠습니까?")) return;
+    try {
+      await releaseEnrollmentSession();
+      alert("수강신청 세션이 종료되었습니다.");
+      navigate(HOME_PATH); // 홈으로 이동
+    } catch (err) {
+      alert("수강신청 종료에 실패했습니다.");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="min-h-[calc(100vh-theme(spacing.headerHeight))] px-6 py-10 font-noto">
       <div className="max-w-6xl mx-auto bg-white p-8 rounded-xl shadow space-y-8">
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <h2 className="text-3xl font-bold text-textMain">
             수강신청 강의 목록
           </h2>
           <div className="text-gray-500">
             {profile?.major} {member && `/ ${member.name}`}
+          </div>
+          
+        </div> */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold text-textMain">
+            수강신청 강의 목록
+          </h2>
+          <div className="flex gap-4 items-center text-gray-500">
+            <div>
+              {profile?.major} {member && `/ ${member.name}`}
+            </div>
+            <button
+              onClick={handleEndSession}
+              className="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
+            >
+              수강신청 종료
+            </button>
           </div>
         </div>
 

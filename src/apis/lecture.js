@@ -180,7 +180,7 @@ export const getEnrollmentQueueStatus = async () => {
 // 수강신청 세션 종료
 export const releaseEnrollmentSession = async () => {
   try {
-    const response = await axiosInstance.post("/api/enrollments/release");
+    const response = await axiosInstance.post("/api/enrollments/queue/release");
     return response.data; // { code, message }
   } catch (error) {
     console.error("수강신청 세션 종료 실패:", error);
